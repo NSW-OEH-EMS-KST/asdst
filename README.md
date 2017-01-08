@@ -1,2 +1,2 @@
 # asdst
-Aborininal Site Decision Support Tool
+Aboriginal Site Decision Support Tool

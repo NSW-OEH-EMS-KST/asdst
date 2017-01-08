@@ -1,0 +1,132 @@
+<ESRI.Configuration xmlns="http://schemas.esri.com/Desktop/AddIns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Name>ASDST
+    </Name>
+    <AddInID>{890daef9-af62-4020-badf-a72af1268a61}
+    </AddInID>
+    <Description>Aboriginal Site Decision Support Tools
+    </Description>
+    <Version>0.1
+    </Version><Image />
+    <Author>D.Bye KST, NSW OEH
+    </Author>
+    <Company>NSW OEH
+    </Company>
+    <Date>07/15/2015
+    </Date>
+    <Targets>
+        <Target name="Desktop" version="10.1" />
+    </Targets>
+    <AddIn language="PYTHON" library="asdst_addin.py" namespace="asdst_addin">
+        <ArcMap>
+            <Commands>
+                <Button caption="Create New ASDST Project"
+                        category="ASDST"
+                        class="AsdstCreateProjectButton"
+                        id="asdst_addin.cmd_create_project"
+                        image="Images/AddInDesktop16.png"
+                        message="This tool creates an empty ASDST project which is the first step in an ASDST analysis workflow"
+                        tip="Create Project">
+                    <Help heading="ASDST help ?">ASDST help to do
+                    </Help>
+                </Button>
+                <!--
+                <ToolPalette caption="AOI"
+                        category="ASDST"
+                        id="asdst_addin.aoi_palette"
+                        image="Images/new.jpg"
+                        isMenuStyle="true">
+                    <Items>
+                        <Tool refID="asdst_addin.cmd_draw_temporary_rectangle" />
+                        <Button refID="asdst_addin.cmd_set_project_area" />
+                    </Items>
+                    <Help heading="ASDST help ?">ASDST help to do
+                    </Help>
+                </ToolPalette>
+                -->
+                <Button caption="Context Calculation"
+                        category="ASDST"
+                        class="AsdstCalculateContextButton"
+                        id="asdst_addin.cmd_calculate_context"
+                        image="Images/LocationGetPolygon16.png"
+                        message="Make a context calculation"
+                        tip="Make a context calculation">
+                    <Help
+                        heading="ASDST help ?">ASDST help to do
+                    </Help>
+                </Button>
+                <!--
+                <Button caption="Set Project Area"
+                        category="ASDST"
+                        class="AsdstSetProjectAreaButton"
+                        id="asdst_addin.cmd_set_project_area"
+                        image="Images/ShapefilePolygon16.png"
+                        message="Set the project area from selected feature"
+                        tip="Set the project area from feature selection">
+                    <Help heading="ASDST help ?">ASDST help to do
+                    </Help>
+                </Button>
+
+                <Button caption="Build Project Data"
+                        category="ASDST"
+                        class="AsdstBuildProjectDataButton"
+                        id="asdst_addin.cmd_build_project_data"
+                        image="Images/GeoprocessingPackage16.png"
+                        message="Build data for the project area"
+                        tip="Build the project data">
+                    <Help heading="ASDST help ?">ASDST help to do
+                    </Help>
+                </Button>
+                <Button caption="Calculate Area Loss"
+                        category="ASDST"
+                        class="AsdstCalculateAreaLossButton"
+                        id="asdst_addin.cmd_calc_area_loss"
+                        image="Images/GeodatabaseTable16.png"
+                        message="Calculate statistics for an area"
+                        tip="Calculate statistics for selected polygon">
+                    <Help heading="ASDST help ?">ASDST help to do
+                    </Help>
+                </Button>
+                -->
+                <Button caption="Configure"
+                        category="ASDST"
+                        class="AsdstConfigureButton"
+                        id="asdst_addin.cmd_configure"
+                        image="Images/GenericWrench_B16.png"
+                        message="Configure"
+                        tip="Check/set toolbox configuration">
+                    <Help heading="ASDST help ?">ASDST help to do
+                    </Help>
+                </Button>
+                <Button caption="ASDST"
+                        category="ASDST"
+                        class="AsdstLabelButton"
+                        id="asdst_addin.cmd_label"
+                        image=""
+                        message=""
+                        tip="">
+                    <Help heading="ASDST help ?">ASDST help to do
+                    </Help>
+                </Button>
+            </Commands>
+            <Extensions>
+                <Extension autoLoad="true" category="ASDST" class="AsdstExtension" description="Aboriginal Sites Decision Support Tool" id="asdst_addin.extension" name="ASDST" productName="ASDST" showInExtensionDialog="true" />
+            </Extensions>
+            <Toolbars>
+                <Toolbar caption="ASDST" category="ASDST" id="asdst_addin.toolbar"
+                         showInitially="true">
+                    <Items>
+                        <!--<Button
+                            refID="asdst_addin.cmd_draw_temporary_rectangle"
+                            /> -->
+                        <Button refID="asdst_addin.cmd_label" />
+                        <Button refID="asdst_addin.cmd_create_project" />
+                        <!--<ToolPalette refID="asdst_addin.aoi_palette" />
+                        <Button refID="asdst_addin.cmd_build_project_data" />-->
+                        <Button refID="asdst_addin.cmd_calculate_context" />
+                        <Button refID="asdst_addin.cmd_configure" />
+                    </Items>
+                </Toolbar>
+            </Toolbars>
+            <Menus>
+            </Menus>
+    </ArcMap></AddIn></ESRI.Configuration>

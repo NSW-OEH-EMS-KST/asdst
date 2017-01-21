@@ -1,3 +1,5 @@
+import arcpy as ap
+from ..asdst_addin import asdst
 
 
 class ConfigureTool(object):
@@ -33,7 +35,7 @@ class ConfigureTool(object):
             """Modify the messages created by internal validation for each tool
             parameter.  This method is called after internal validation."""
             if self.params[2].value:
-                fields = arcpy.ListFields(self.params[2].value)
+                fields = ap.ListFields(self.params[2].value)
                 fieldnames = {f.name for f in fields}
                 codes = {k for k, v in asdst.codes.iteritems()}
                 miss = codes - fieldnames
@@ -50,29 +52,31 @@ class ConfigureTool(object):
 
     def getParameterInfo(self):
         # Source_Database
-        param_1 = arcpy.Parameter()
+        param_1 = ap.Parameter()
         param_1.name = u'Source_Database'
         param_1.displayName = u'Source Database'
         param_1.parameterType = 'Required'
         param_1.direction = 'Input'
         param_1.datatype = u'Workspace'
+        param_1.value = asdst.config.source_fgdb
 
         # Template_Map
-        param_2 = arcpy.Parameter()
+        param_2 = ap.Parameter()
         param_2.name = u'Template_Map'
         param_2.displayName = u'Template Map'
         param_2.parameterType = 'Required'
         param_2.direction = 'Input'
         param_2.datatype = u'ArcMap Document'
-        param_2.value = u'C:\\AppData\\Local\\ASDST\\template.mxd'
+        param_2.value = asdst.config.template_mxd  # u'C:\\AppData\\Local\\ASDST\\template.mxd'
 
         # AHIMS_Sites
-        param_3 = arcpy.Parameter()
+        param_3 = ap.Parameter()
         param_3.name = u'AHIMS_Sites'
         param_3.displayName = u'AHIMS Sites'
         param_3.parameterType = 'Optional'
         param_3.direction = 'Input'
         param_3.datatype = u'Feature Class'
+        param_3.value = asdst.config.ahims_sites
 
         return [param_1, param_2, param_3]
 
@@ -90,28 +94,25 @@ class ConfigureTool(object):
             return validator(parameters).updateMessages()
 
     def execute(self, parameters, messages):
-        with script_run_as(u'C:\\Data\\asdst\\asdst_addin\\Install\\configure.py'):
-            """
-            report and (optionally) modify extension parameters
-            """
-            import arcpy as ap
-            from asdst_addin import asdst
-
-    def main():
-        """ Main entry
-
-        Args:
-
-        Returns:
-
-        Raises:
-          No raising or catching
-
-        """
         asdst.config.set_user_config(parameters[0].valueAsText,
                                      parameters[1].valueAsText,
                                      parameters[2].valueAsText)
 
-    if __name__ == '__main__':
-        main()
+    # def main():
+    #     """ Main entry
+    #
+    #     Args:
+    #
+    #     Returns:
+    #
+    #     Raises:
+    #       No raising or catching
+    #
+    #     """
+    #     asdst.config.set_user_config(parameters[0].valueAsText,
+    #                                  parameters[1].valueAsText,
+    #                                  parameters[2].valueAsText)
+    #
+    # if __name__ == '__main__':
+    #     main()
 

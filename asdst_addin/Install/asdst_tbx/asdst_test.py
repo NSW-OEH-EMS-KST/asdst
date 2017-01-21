@@ -1,6 +1,6 @@
-from tools.configure import ConfigureTool
-from tools.create_project import CreateProject
-from tools.context_calculation import ContextCalculation
+from asdst_addin.Install.asdst_tbx.tools import ConfigureTool
+from asdst_addin.Install.asdst_tbx.tools import ContextCalculation
+from asdst_addin.Install.asdst_tbx.tools import CreateProject
 
 
 class Toolbox(object):

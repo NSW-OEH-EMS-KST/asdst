@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import contextlib
-import os
-import sys
-
-import arcpy
-
 # You can ignore/delete this code; these are basic utility functions to
 # streamline porting
 
@@ -29,16 +23,16 @@ import arcpy
 #         os.chdir(oldcwd)
 
 
-from tools.configure import ConfigureTool
-from tools.create_project import CreateProject
-from tools.context_calculation import ContextCalculation
+from configure import ConfigureTool
+from context_calculation import ContextCalculationTool
+from create_project import CreateProjectTool
 
 
 class Toolbox(object):
     def __init__(self):
-        self.label = u'ASDST'
+        self.label = u'Aboriginal Site Decision Support Tools'
         self.alias = u'ASDST'
-        self.tools = [ConfigureTool, CreateProject, ContextCalculation]
+        self.tools = [ConfigureTool, CreateProjectTool, ContextCalculationTool]
 
 
 def main():

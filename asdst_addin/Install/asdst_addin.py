@@ -4,11 +4,12 @@ from os import makedirs, environ
 from os.path import dirname, realpath, join, exists, split
 from json import load, dump
 from ast import literal_eval
+from asdst_tbx.create_project import CreateProjectTool
 
-# alias for ease
+# Alias
 arcmap = ap.mapping
 
-# global for external module ref
+# Global for external module ref
 asdst = None
 
 
@@ -49,6 +50,7 @@ class Config(object):
         self.has_template_mxd = False
 
     def layer_dictionary(self, local_workspace):
+        # type: (str) -> dict[str: dict[str: str]]
         source_ws = self.source_fgdb
         sfx_1750 = "_v7"
         sfx_curr = "_current"
@@ -59,6 +61,7 @@ class Config(object):
                 for k, v in asdst.codes.iteritems()}
 
     def set_user_config(self, source_fgdb, template_mxd, ahims_sites):
+        # type: (str, str, str) -> None
         """ Saves setting to JSON file
 
         Args:
@@ -99,24 +102,27 @@ class Config(object):
 
         with open(self.config_file, 'w') as f:
             dump(cfg, f)
-
-            # message("set_usr_config END")
+            
+        return
 
     def get_user_config(self):
-        """ Saves setting to JSON file
+        # type: () -> [str, str, str]
+        """ Saves settings to JSON file
 
         Args:
+            None
 
         Returns:
+            3-tuple of strings
 
         Raises:
-          No raising or catching
+            Nothing explicit
 
         """
-
         return self.source_fgdb, self.template_mxd, self.ahims_sites
 
     def validate(self):
+        # type: () -> object
         # asdst.message("Config.validate")
         self.errors = []
 
@@ -186,12 +192,12 @@ class Config(object):
              nice_test(self.template_mxd, ws, "Template MXD"),
              nice_test(self.ahims_sites, ws, "AHIMS Sites")]
 
-        f = u"{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\n" \
-            u"{12}\n{13}"
+        f = u"{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\nu{12}\n{13}"
 
         self.status = f.format(v, e, *r)
 
         # asdst.message("Config.validate END")
+        return
 
 
 class Project(object):
@@ -319,11 +325,9 @@ class AsdstLabelButton(object):
             m = u"{0}\n{1}\n{2}"
             asdst.config.validate()
             a = asdst.config.status
-            # asdst.message(1)
             asdst.project.update()
-            # asdst.message(2)
             b = asdst.project.status
-            m = m.format(a, bar, b)
+            m = m.format(bar, a, bar, b)
             asdst.message(m)
         except Exception as e:
             pa.MessageBox(e, "AsdstLabelButton.onClick")

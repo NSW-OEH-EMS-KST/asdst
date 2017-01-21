@@ -4,7 +4,7 @@ from os import makedirs, environ
 from os.path import dirname, realpath, join, exists, split
 from json import load, dump
 from ast import literal_eval
-from asdst_tbx.create_project import CreateProjectTool
+# from asdst_tbx.create_project import CreateProjectTool
 
 # Alias
 arcmap = ap.mapping
@@ -293,9 +293,9 @@ class AsdstCalculateContextButton(object):
     def onClick(self):
         # launch the calculate context tool
         try:
-            pa.GPToolDialog(asdst.config.toolbox, "ContextCalculation")
+            pa.GPToolDialog(asdst.config.toolbox, "ContextCalculationTool")
         except Exception as e:
-            pa.MessageBox(e, "AsdstCreateProjectButton.onClick")
+            pa.MessageBox(e, "AsdstCalculateContextButton.onClick")
 
 
 class AsdstCreateProjectButton(object):
@@ -307,7 +307,7 @@ class AsdstCreateProjectButton(object):
     def onClick(self):
         # launch the new project tool
         try:
-            pa.GPToolDialog(asdst.config.toolbox, "CreateProject")
+            pa.GPToolDialog(asdst.config.toolbox, "CreateProjectTool")
         except Exception as e:
             pa.MessageBox(e, "AsdstCreateProjectButton.onClick")
 
@@ -422,7 +422,7 @@ class AsdstExtension(object):
     def __enable_tools(self):
         # message("AsdstExtension.enable_tools")
 
-        commands = [cmd_create_project, cmd_calculate_context]
+        commands = [AsdstCreateProjectButton, AsdstCalculateContextButton, AsdstConfigureButton]
 
         for cmd in commands:
             cmd.enabled = False
@@ -434,7 +434,7 @@ class AsdstExtension(object):
         lyrs = arcmap.ListLayers(self.project.mxd)
 
         if lyrs:  # require at least one layer for context
-            cmd_create_project.enabled = True
+            AsdstCreateProjectButton.enabled = True
 
         if not self.project.valid:
             return
@@ -443,7 +443,7 @@ class AsdstExtension(object):
         msg = self.project.status
 
         # if "MISSING" not in msg:
-        cmd_calculate_context.enabled = not self.project.missing_layers
+        AsdstCalculateContextButton.enabled = not self.project.missing_layers
 
         # message("AsdstExtension.enable_tools END")
 

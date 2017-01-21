@@ -1,4 +1,3 @@
-from ..asdst import
 
 
 class ConfigureTool(object):

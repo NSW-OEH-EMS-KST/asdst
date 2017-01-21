@@ -1,7 +1,7 @@
 import arcpy
 
 class ContextCalculation(object):
-    ---------------------------------------------------------------------------------------------
+
     class ToolValidator(object):
         """Class for validating a tool's parameter values and controlling
         the behavior of the tool's dialog."""
@@ -25,7 +25,6 @@ class ContextCalculation(object):
             """Modify the messages created by internal validation for each tool
             parameter.  This method is called after internal validation."""
             return
-    ----------------------------------------------------------------------------------------------
 
     def __init__(self):
         self.label = u'Context Calculation'

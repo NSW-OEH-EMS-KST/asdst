@@ -1,6 +1,7 @@
-# asdst
-Aboriginal Site Decision Support Tool
+# ASDST
+Aboriginal Site Decision Support Tools
 
-This repository does not contain required spatial data and file geodatabases.
+This repository holds python code for the tools, it does not contain required spatial data and file geodatabases.
 
-NEEDS A LINK TO JUST THE .ADDIN FILE FOR THOSE WHO JUST WANT THAT...
+TODO Link to .addin file
+TODO Link to spatial data or instructions re obtaining

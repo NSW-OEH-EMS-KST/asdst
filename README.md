@@ -1,6 +1,6 @@
-# asdst
-Aboriginal Site Decision Support Tool
+# ASDST
+Aboriginal Site Decision Support Tools
 
-This repository does not contain required spatial data and file geodatabases.
+Installation and usage information can be found in the Wiki. 
 
-NEEDS A LINK TO JUST THE .ADDIN FILE FOR THOSE WHO JUST WANT THAT...
+(The link to the Wiki is directly above, between the links to Projects and Pulse)

@@ -1,4 +1,4 @@
-[[https://github.com/NSW-OEH-EMS-KST/asdst/blob/master/img/oehlogo.png]]
+![oeh logo](https://github.com/NSW-OEH-EMS-KST/asdst/blob/master/img/oehlogo.png)
 
 # ASDST
 Aboriginal Site Decision Support Tools

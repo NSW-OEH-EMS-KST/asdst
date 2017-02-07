@@ -1,0 +1,57 @@
+<ns0:ESRI.Configuration xmlns:ns0="http://schemas.esri.com/Desktop/AddIns">
+    <ns0:Name>ASDST
+    </ns0:Name>
+    <ns0:AddInID>{890daef9-af62-4020-badf-a72af1268a61}
+    </ns0:AddInID>
+    <ns0:Description>Aboriginal Site Decision Support Tools
+    </ns0:Description>
+    <ns0:Version>0.1
+    </ns0:Version><ns0:Image />
+    <ns0:Author>D.Bye KST, NSW OEH
+    </ns0:Author>
+    <ns0:Company>NSW OEH
+    </ns0:Company>
+    <ns0:Date>07/02/2017 09:02</ns0:Date>
+    <ns0:Targets>
+        <ns0:Target name="Desktop" version="10.1" />
+    </ns0:Targets>
+    <ns0:AddIn language="PYTHON" library="asdst_addin.py" namespace="asdst_addin">
+        <ns0:ArcMap>
+            <ns0:Commands>
+                <ns0:Button caption="Create New ASDST Project" category="ASDST" class="AsdstCreateProjectButton" id="asdst_addin.cmd_create_project" image="Images/AddInDesktop16.png" message="This tool creates an empty ASDST project which is the first step in an ASDST analysis workflow" tip="Create Project">
+                    <ns0:Help heading="ASDST help ?">ASDST help to do
+                    </ns0:Help>
+                </ns0:Button>
+                
+                <ns0:Button caption="Context Calculation" category="ASDST" class="AsdstCalculateContextButton" id="asdst_addin.cmd_calculate_context" image="Images/LocationGetPolygon16.png" message="Make a context calculation" tip="Make a context calculation">
+                    <ns0:Help heading="ASDST help ?">ASDST help to do
+                    </ns0:Help>
+                </ns0:Button>
+                
+                <ns0:Button caption="Configure" category="ASDST" class="AsdstConfigureButton" id="asdst_addin.cmd_configure" image="Images/GenericWrench_B16.png" message="Configure" tip="Check/set toolbox configuration">
+                    <ns0:Help heading="ASDST help ?">ASDST help to do
+                    </ns0:Help>
+                </ns0:Button>
+                <ns0:Button caption="ASDST" category="ASDST" class="AsdstLabelButton" id="asdst_addin.cmd_label" image="" message="" tip="">
+                    <ns0:Help heading="ASDST help ?">ASDST help to do
+                    </ns0:Help>
+                </ns0:Button>
+            </ns0:Commands>
+            <ns0:Extensions>
+                <ns0:Extension autoLoad="true" category="ASDST" class="AsdstExtension" description="Aboriginal Sites Decision Support Tool" id="asdst_addin.extension" name="ASDST" productName="ASDST" showInExtensionDialog="true" />
+            </ns0:Extensions>
+            <ns0:Toolbars>
+                <ns0:Toolbar caption="ASDST" category="ASDST" id="asdst_addin.toolbar" showInitially="true">
+                    <ns0:Items>
+                        
+                        <ns0:Button refID="asdst_addin.cmd_label" />
+                        <ns0:Button refID="asdst_addin.cmd_create_project" />
+                        
+                        <ns0:Button refID="asdst_addin.cmd_calculate_context" />
+                        <ns0:Button refID="asdst_addin.cmd_configure" />
+                    </ns0:Items>
+                </ns0:Toolbar>
+            </ns0:Toolbars>
+            <ns0:Menus>
+            </ns0:Menus>
+    </ns0:ArcMap></ns0:AddIn></ns0:ESRI.Configuration>

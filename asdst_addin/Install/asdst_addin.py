@@ -4,13 +4,15 @@ from os import makedirs, environ
 from os.path import dirname, realpath, join, exists, split
 from json import load, dump
 from ast import literal_eval
-# from asdst_tbx.create_project import CreateProjectTool
+import logging
+
 
 # Alias
 arcmap = ap.mapping
 
-# Global for external module ref
-asdst = None
+# Globals for external module ref
+the_extension = None
+log = None
 
 
 class Config(object):
@@ -19,10 +21,9 @@ class Config(object):
         self.short_name = "ASDST"
         self.version = "0.1"
         self.script_path = dirname(realpath(__file__))
-        self.appdata_path = join(environ["USERPROFILE"], "AppData", "Local",
-                                 "ASDST")
+        self.appdata_path = join(environ["USERPROFILE"], "AppData", "Local", "ASDST")
         self.config_file = join(self.appdata_path, "config.json")
-        self.toolbox = join(self.script_path, "ASDST.tbx")
+        self.toolbox = join(self.script_path, "ASDST.pyt")
         self.errors = None
         self.valid = None
         self.status = ""
@@ -45,9 +46,15 @@ class Config(object):
         # configurable settings
         self.source_fgdb = join(self.appdata_path, "asdst_source.gdb")
         self.template_mxd = join(self.appdata_path, "asdst_default.mxd")
+        self.log_file = join(self.appdata_path, "asdst.log")
         self.ahims_sites = None
         self.has_source_gdb = False
         self.has_template_mxd = False
+        # logging
+        global log
+        log = logging
+        log.basicConfig(filename=self.log_file, filemode="w", level=logging.DEBUG)
+        log.debug("Config.__init__: " + str(locals()))
 
     def layer_dictionary(self, local_workspace):
         # type: (str) -> dict[str: dict[str: str]]
@@ -58,7 +65,7 @@ class Config(object):
                     "1750_source": (join(source_ws, k.lower() + sfx_1750)),
                     "1750_local": (join(local_workspace, k.lower() + "_1750")),
                     "curr_local": (join(local_workspace, k.lower() + sfx_curr))}
-                for k, v in asdst.codes.iteritems()}
+                for k, v in the_extension.codes.iteritems()}
 
     def set_user_config(self, source_fgdb, template_mxd, ahims_sites):
         # type: (str, str, str) -> None
@@ -102,15 +109,12 @@ class Config(object):
 
         with open(self.config_file, 'w') as f:
             dump(cfg, f)
-            
+
         return
 
     def get_user_config(self):
         # type: () -> [str, str, str]
         """ Saves settings to JSON file
-
-        Args:
-            None
 
         Returns:
             3-tuple of strings
@@ -261,7 +265,7 @@ class Project(object):
         f = u"{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\n" \
             u"{12}\n{13}\n{14}\n{15}\n{16}\n{17}\n{18}"
         r = [ws]
-        for k, v in asdst.config.layer_dictionary(ws).iteritems():
+        for k, v in the_extension.config.layer_dictionary(ws).iteritems():
             r.append(nice_test(v["1750_local"], ws))
             r.append(nice_test(v["curr_local"], ws))
 
@@ -269,16 +273,16 @@ class Project(object):
         return f.format(*r)
 
     def layer_dictionary(self):
-        return asdst.config.layer_dictionary(self.gdb)
+        return the_extension.config.layer_dictionary(self.gdb)
 
     def add_layers(self, layers, group_name, layer_type):
-        asdst.add_layers(self.mxd, layers, group_name, layer_type)
+        the_extension.add_layers(self.mxd, layers, group_name, layer_type)
 
     def add_table(self, mxd, table, name=""):
-        asdst.add_table(self.mxd, mxd, table, name)
+        the_extension.add_table(self.mxd, mxd, table, name)
 
     def compact_fgdb(self):
-        asdst.compact_fgdb(self.gdb)
+        the_extension.compact_fgdb(self.gdb)
 
 
 PROTECTED = ["Areas of Interest", "Context", "Pre-1750", "Current", "ASDST"]
@@ -293,7 +297,7 @@ class AsdstCalculateContextButton(object):
     def onClick(self):
         # launch the calculate context tool
         try:
-            pa.GPToolDialog(asdst.config.toolbox, "ContextCalculationTool")
+            pa.GPToolDialog(the_extension.config.toolbox, "ContextCalculationTool")
         except Exception as e:
             pa.MessageBox(e, "AsdstCalculateContextButton.onClick")
 
@@ -307,7 +311,7 @@ class AsdstCreateProjectButton(object):
     def onClick(self):
         # launch the new project tool
         try:
-            pa.GPToolDialog(asdst.config.toolbox, "CreateProjectTool")
+            pa.GPToolDialog(the_extension.config.toolbox, "CreateProjectTool")
         except Exception as e:
             pa.MessageBox(e, "AsdstCreateProjectButton.onClick")
 
@@ -319,16 +323,15 @@ class AsdstLabelButton(object):
         self.enabled = True
 
     def onClick(self):
-        try:
-            # show the version, any error info and ASDST layer status
+        try:  # show the version, any error info and ASDST layer status
             bar = '{0:-<60}'.format('')
             m = u"{0}\n{1}\n{2}"
-            asdst.config.validate()
-            a = asdst.config.status
-            asdst.project.update()
-            b = asdst.project.status
+            the_extension.config.validate()
+            a = the_extension.config.status
+            the_extension.project.update()
+            b = the_extension.project.status
             m = m.format(bar, a, bar, b)
-            asdst.message(m)
+            the_extension.message(m)
         except Exception as e:
             pa.MessageBox(e, "AsdstLabelButton.onClick")
 
@@ -340,10 +343,9 @@ class AsdstConfigureButton(object):
         self.enabled = True
 
     def onClick(self):
-        # launch the configuration tool
-        try:
-            pa.GPToolDialog(asdst.config.toolbox, "configure")
-            asdst.project.update()
+        try:  # launch the configuration tool
+            pa.GPToolDialog(the_extension.config.toolbox, "configure")
+            the_extension.project.update()
         except Exception as e:
             pa.MessageBox(e, "AsdstConfigureButton.onClick")
 
@@ -355,10 +357,9 @@ class AsdstExtension(object):
     # this class.
 
     def __init__(self):
-        # self.message("AsdstExtension.__init__")
 
-        global asdst
-        asdst = self
+        global the_extension
+        the_extension = self
 
         self.project = Project()
         self.config = Config()
@@ -387,6 +388,7 @@ class AsdstExtension(object):
         return pa.MessageBox(msg, self.config.long_name, mb)
 
     def startup(self):
+        # pa.MessageBox("!", "AsdstExtension.startup")
         try:
             # check config
             self.config.validate()

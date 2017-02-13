@@ -124,7 +124,7 @@ class Config(object):
 
     def validate(self):
         # type: () -> object
-        # asdst_extension.message("Config.validate")
+        asdst_extension.message("Config.validate")
         self.errors = []
 
         # check if the app data folder is there, if not create
@@ -174,7 +174,7 @@ class Config(object):
             self.errors.append(
                 "AHIMS site data '{0}' does not exist".format(self.ahims_sites))
 
-        v = "asdst_extension Version {0}".format(self.version)
+        v = "ASDST Version {0}".format(self.version)
         e = self.errors
         if not e:
             e = u"No start-up errors identified."
@@ -197,7 +197,7 @@ class Config(object):
 
         self.status = f.format(v, e, *r)
 
-        # asdst_extension.message("Config.validate END")
+        asdst_extension.message("Config.validate END")
         return
 
 
@@ -213,7 +213,7 @@ class Project(object):
         self.missing_layers = True
 
     def update(self):
-        # asdst_extension.message("Project.update")
+        asdst_extension.message("Project.update")
         self.valid = False
         self.mxd = am.MapDocument("CURRENT")
         self.df = am.ListDataFrames(self.mxd)[0]
@@ -232,7 +232,7 @@ class Project(object):
             tags = self.mxd.tags
             if tags:
                 tag_list = tags.split(",")
-                tag = [t for t in tag_list if (("asdst_extension" in t) and ("gdb" in t))]
+                tag = [t for t in tag_list if (("ASDST" in t) and ("gdb" in t))]
                 if tag:
                     tag = tag[0]
                     tag = tag.replace(";", ",")
@@ -246,14 +246,14 @@ class Project(object):
         self.status = self.__get_layer_status()
         self.missing_layers = (u"\t\u2716" in self.status)
 
-        # asdst_extension.message("Project.update END")
+        asdst_extension.message("Project.update END")
 
     def __get_layer_status(self):
         # asdst_extension.message("Project.__get_layer_status")
 
         ws = self.gdb if self.gdb else None
         if not ws:
-            return "No asdst_extension Project Workspace"
+            return "No ASDST Project Workspace"
 
         f = u"{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\n" \
             u"{12}\n{13}\n{14}\n{15}\n{16}\n{17}\n{18}"
@@ -278,7 +278,8 @@ class Project(object):
         asdst_extension.compact_fgdb(self.gdb)
 
 
-PROTECTED = ["Areas of Interest", "Context", "Pre-1750", "Current", "asdst_extension"]
+PROTECTED = ["Areas of Interest", "Context", "Pre-1750", "Current", "ASDST"]
+
 
 class InfoButton(object):
     """Implementation for asdst_extension_addin.cmd_label (Button)"""
@@ -288,8 +289,7 @@ class InfoButton(object):
 
     def onClick(self):
         try:
-            asdst_extension.message("InfoButton.onClick")
-            # show the version, any error info and asdst_extension layer status
+            # show the version, any error info and ASDST layer status
             bar = '{0:-<60}'.format('')
             m = u"{0}\n{1}\n{2}"
             asdst_extension.config.validate()
@@ -309,12 +309,11 @@ class CalculateContextButton(object):
         self.enabled = False
 
     def onClick(self):
-        # pa.MessageBox("!", "CalculateContextButton.onClick")
         try:  # launch the calculate context tool
-            # pa.GPToolDialog(asdst_extension.config.toolbox, "ContextCalculationTool")
+            pa.GPToolDialog(asdst_extension.config.toolbox, "ContextCalculationTool")
             pass
         except Exception as e:
-            pa.MessageBox(e, "asdst_extensionCalculateContextButton.onClick")
+            pa.MessageBox(e, "CalculateContextButton.onClick")
 
 
 class CreateProjectButton(object):
@@ -324,13 +323,11 @@ class CreateProjectButton(object):
         self.enabled = False
 
     def onClick(self):
-        # pa.MessageBox("!", "CreateProjectButton.onClick")
         try:  # launch the new project tool
-            # pa.GPToolDialog(asdst_extension.config.toolbox, "CreateProjectTool")
+            pa.GPToolDialog(asdst_extension.config.toolbox, "CreateProjectTool")
             pass
         except Exception as e:
-            pa.MessageBox(e, "asdst_extensionCreateProjectButton.onClick")
-
+            pa.MessageBox(e, "CreateProjectButton.onClick")
 
 
 class ConfigureButton(object):
@@ -340,13 +337,12 @@ class ConfigureButton(object):
         self.enabled = True
 
     def onClick(self):
-        # pa.MessageBox("!", "ConfigureButton.onClick")
         try:  # launch the configuration tool
-            # pa.GPToolDialog(asdst_extension.config.toolbox, "configure")
-            # asdst_extension.project.update()
-            pass
+            pa.GPToolDialog(asdst_extension.config.toolbox, "ConfigureTool")
+            asdst_extension.project.update()
+            # pass
         except Exception as e:
-            pa.MessageBox(e, "asdst_extensionConfigureButton.onClick")
+            pa.MessageBox(e, "ConfigureButton.onClick")
 
 
 class AsdstExtension(object):
@@ -403,152 +399,153 @@ class AsdstExtension(object):
             self.message("Extension.startup")
         except:
             pass
-        # try:
-        #     # check config
-        #     # self.config.validate()
-        #     pass
-        # except Exception as e:
-        #     pass
-        #     # pa.MessageBox(e, "asdst_extensionExtension.startup")
+        try:
+            # check config
+            # self.config.validate()
+            pass
+        except Exception as e:
+            # pass
+            pa.MessageBox(e, "asdst_extension.startup")
 
-    # def newDocument(self):
-    #     try:
-    #         pass
-    #         # self.project.update()
-    #         # self.__enable_tools()
-    #     except Exception as e:
-    #         # pa.MessageBox(e, "asdst_extensionExtension.newDocument")
-    #         pass
+    def newDocument(self):
+        try:
+            # pass
+            self.project.update()
+            self.__enable_tools()
+        except Exception as e:
+            pa.MessageBox(e, "asdst_extension.newDocument")
+            # pass
 
     def openDocument(self):
         try:
             pa.MessageBox("open", "asdst_extension.openDocument")
             # pass
-            # self.project.update()
-            # self.__enable_tools()
+            self.project.update()
+            self.__enable_tools()
         except Exception as e:
             pass
-            pa.MessageBox(e, "asdst_extensionExtension.openDocument")
+            pa.MessageBox(e, "asdst_extension.openDocument")
 
-    # def itemAdded(self, new_item):
-    #     try:
-    #         pass
-    #         # self.__enable_tools()
-    #     except Exception as e:
-    #         pass
-    #         # pa.MessageBox(e, "asdst_extensionExtension.openDocument")
+    def itemAdded(self, new_item):
+        try:
+            # pass
+            self.__enable_tools()
+        except Exception as e:
+            # pass
+            pa.MessageBox(e, "asdst_extension.openDocument")
 
-    # def itemDeleted(self, deleted_item):
-    #     try:
-    #         pass
-    #         # self.__enable_tools()
-    #     except Exception as e:
-    #         pa.MessageBox(e, "asdst_extensionExtension.openDocument")
+    def itemDeleted(self, deleted_item):
+        try:
+            # pass
+            self.__enable_tools()
+        except Exception as e:
+            pa.MessageBox(e, "asdst_extension.openDocument")
 
-    # def __enable_tools(self):
-    #     # message("asdst_extensionExtension.enable_tools")
-    #
-    #     # commands = [asdst_extensionCreateProjectButton, asdst_extensionCalculateContextButton, asdst_extensionConfigureButton]
-    #     #
-    #     # for cmd in commands:
-    #     #     cmd.enabled = False
-    #     #
-    #     # if self.config.errors:
-    #     #     self.message(self.config.errors)
-    #     #     return
-    #     #
-    #     # lyrs = am.ListLayers(self.project.mxd)
-    #     #
-    #     # if lyrs:  # require at least one layer for context
-    #     #     asdst_extensionCreateProjectButton.enabled = True
-    #     #
-    #     # if not self.project.valid:
-    #     #     return
-    #     #
-    #     # # msg = check_layers(lyrs)
-    #     # msg = self.project.status
-    #     #
-    #     # # if "MISSING" not in msg:
-    #     # asdst_extensionCalculateContextButton.enabled = not self.project.missing_layers
-    #     pass
+    def __enable_tools(self):
+        # message("asdst_extensionExtension.enable_tools")
+
+        commands = [CreateProjectButton, CalculateContextButton, ConfigureButton]
+
+        for cmd in commands:
+            cmd.enabled = False
+
+        if self.config.errors:
+            self.message(self.config.errors)
+            return
+
+        lyrs = am.ListLayers(self.project.mxd)
+
+        if lyrs:  # require at least one layer for context
+            CreateProjectButton.enabled = True
+
+        if not self.project.valid:
+            return
+
+        # msg = check_layers(lyrs)
+        msg = self.project.status
+
+        # if "MISSING" not in msg:
+        CalculateContextButton.enabled = not self.project.missing_layers
+        # pass
         # message("asdst_extensionExtension.enable_tools END")
 
-    # def add_table(self, mxd, table, name=""):
-    #     # # message("Adding {0}".format(table))
-    #     #
-    #     # # ap.AddMessage("mxd = {0}".format(mxd))
-    #     # df = am.ListDataFrames(mxd)[0]
-    #     # tv = am.TableView(table)
-    #     # if name:
-    #     #     tv.name = name
-    #     # am.AddTableView(df, tv)
-    #     # ap.AddMessage("...table '{0}' added".format(tv.name))
-    #     pass
-    #
-    # def add_layers(self, mxd, layers, group_name, layer_type):
-    #     # layers is a {name: datasource} dictionary
-    #
-    #     # if isinstance(mxd, basestring):
-    #     #     mxd = am.MapDocument(mxd)
-    #     #
-    #     # df = am.ListDataFrames(mxd)[0]
-    #     # lyr_file = self.config.empty_layers.get(layer_type, None)
-    #     # glyr = None
-    #     #
-    #     # if group_name:  # try to find the group
-    #     #     lyrs = am.ListLayers(mxd, group_name, df)
-    #     #     glyr = lyrs[0] if lyrs else None
-    #     #     if not glyr:  # not found, so create it
-    #     #         glyr = am.Layer(self.config.empty_group_layer)
-    #     #         glyr.name = group_name
-    #     #         am.AddLayer(df, glyr)
-    #     #     # this line is required, arc must add a deep copy or something?
-    #     #     # anyway without this there is an exception raised
-    #     #     glyr = am.ListLayers(mxd, group_name, df)[0]
-    #     #
-    #     # for k, v in layers.iteritems():
-    #     #     if not lyr_file:
-    #     #         lyr = am.Layer(v)
-    #     #     else:
-    #     #         lyr = am.Layer(lyr_file)
-    #     #         p, n = split(v)
-    #     #         lyr.replaceDataSource(p, "FILEGDB_WORKSPACE", n, validate=False)
-    #     #     lyr.name = k
-    #     #     if glyr:
-    #     #         am.AddLayerToGroup(df, glyr, lyr)
-    #     #         ap.AddMessage(
-    #     #             "...'{0}' layer added to group '{1}'".format(lyr.name,
-    #     #                                                          glyr.name))
-    #     #     else:
-    #     #         am.AddLayer(df, lyr)
-    #     #         ap.AddMessage("...'{0}' layer added".format(lyr.name))
-    #     pass
-    #
-    # def compact_fgdb(self, gdb):
-    #     # from glob import glob
-    #     # from os.path import getsize
-    #     # sz = 0
-    #     # mb = 1024 * 1024
-    #     #
-    #     # if gdb and ap.Exists(gdb):
-    #     #     for f in glob(gdb + "\\*"):
-    #     #         sz += getsize(f)
-    #     #     sz /= mb
-    #     #     ap.AddMessage("Size of database '{0}' is ~ {1} MB".format(gdb, sz))
-    #     pass
+    def add_table(self, mxd, table, name=""):
+        # message("Adding {0}".format(table))
 
-# def is_within_project_area(area):
-#     prj_lyr = am.ListLayers(am.MapDocument("CURRENT"), "Project Area")
-#     if not prj_lyr:
-#         raise Exception("No layer called 'Project Area'")
-#
-#     mlyr = join("in_memory", "tmp")
-#     ap.MakeFeatureLayer_management(area, mlyr)
-#     ap.SelectLayerByLocation_management(mlyr, 'WITHIN', prj_lyr)
-#
-#     count = int(ap.GetCount_management(mlyr).getOutput(0))
-#
-#     return count > 0
+        # ap.AddMessage("mxd = {0}".format(mxd))
+        df = am.ListDataFrames(mxd)[0]
+        tv = am.TableView(table)
+        if name:
+            tv.name = name
+        am.AddTableView(df, tv)
+        ap.AddMessage("...table '{0}' added".format(tv.name))
+        # pass
+
+    def add_layers(self, mxd, layers, group_name, layer_type):
+        # layers is a {name: datasource} dictionary
+
+        if isinstance(mxd, basestring):
+            mxd = am.MapDocument(mxd)
+
+        df = am.ListDataFrames(mxd)[0]
+        lyr_file = self.config.empty_layers.get(layer_type, None)
+        glyr = None
+
+        if group_name:  # try to find the group
+            lyrs = am.ListLayers(mxd, group_name, df)
+            glyr = lyrs[0] if lyrs else None
+            if not glyr:  # not found, so create it
+                glyr = am.Layer(self.config.empty_group_layer)
+                glyr.name = group_name
+                am.AddLayer(df, glyr)
+            # this line is required, arc must add a deep copy or something?
+            # anyway without this there is an exception raised
+            glyr = am.ListLayers(mxd, group_name, df)[0]
+
+        for k, v in layers.iteritems():
+            if not lyr_file:
+                lyr = am.Layer(v)
+            else:
+                lyr = am.Layer(lyr_file)
+                p, n = split(v)
+                lyr.replaceDataSource(p, "FILEGDB_WORKSPACE", n, validate=False)
+            lyr.name = k
+            if glyr:
+                am.AddLayerToGroup(df, glyr, lyr)
+                ap.AddMessage(
+                    "...'{0}' layer added to group '{1}'".format(lyr.name,
+                                                                 glyr.name))
+            else:
+                am.AddLayer(df, lyr)
+                ap.AddMessage("...'{0}' layer added".format(lyr.name))
+        # pass
+
+    def compact_fgdb(self, gdb):
+        from glob import glob
+        from os.path import getsize
+        sz = 0
+        mb = 1024 * 1024
+
+        if gdb and ap.Exists(gdb):
+            for f in glob(gdb + "\\*"):
+                sz += getsize(f)
+            sz /= mb
+            ap.AddMessage("Size of database '{0}' is ~ {1} MB".format(gdb, sz))
+        # pass
+
+
+def is_within_project_area(area):
+    prj_lyr = am.ListLayers(am.MapDocument("CURRENT"), "Project Area")
+    if not prj_lyr:
+        raise Exception("No layer called 'Project Area'")
+
+    mlyr = join("in_memory", "tmp")
+    ap.MakeFeatureLayer_management(area, mlyr)
+    ap.SelectLayerByLocation_management(mlyr, 'WITHIN', prj_lyr)
+
+    count = int(ap.GetCount_management(mlyr).getOutput(0))
+
+    return count > 0
 
 
 def nice_test(thing_to_check, thing_possible_base, thing_name=""):
@@ -556,7 +553,10 @@ def nice_test(thing_to_check, thing_possible_base, thing_name=""):
     bad = u"\t\u2716"
     u = u"{0: <20}{1}"
 
-    x2 = unicode(thing_to_check.replace(thing_possible_base, "..."))
+    try:
+        x2 = unicode(thing_to_check.replace(thing_possible_base, "..."))
+    except:
+        x2 = u"Something went wrong"
 
     if not thing_to_check or not ap.Exists(thing_to_check):
         if thing_name:

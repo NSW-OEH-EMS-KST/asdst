@@ -198,8 +198,7 @@ from asdst_addin import asdst_extension  #, log, nice_test
 class ConfigureTool(object):
 
     class ToolValidator(object):
-        """Class for validating a tool's parameter values and controlling
-        the behavior of the tool's dialog."""
+        """Class for validating a tool's parameter values and controlling the behavior of the tool's dialog."""
 
         def __init__(self, parameters):
             """Setup arcpy and the list of tool parameters."""
@@ -236,8 +235,7 @@ class ConfigureTool(object):
                 codes = {k for k, v in asdst_extension.codes.iteritems()}
                 miss = codes - fieldnames
                 if miss:
-                    s = ", ".join(miss)
-                self.params[2].setErrorMessage("Feature class does not contain all required fields {0}".format(s))
+                    self.params[2].setErrorMessage("Feature class does is missing required fields {}".format(", ".join(miss)))
 
             return
 
@@ -304,7 +302,7 @@ class ConfigureTool(object):
                                              parameters[1].valueAsText,
                                              parameters[2].valueAsText)
 
-        pass
+        # pass
 
 # def main():
 #         """ Main entry

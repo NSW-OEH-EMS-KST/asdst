@@ -2,7 +2,7 @@ import arcpy as ap
 from os import makedirs, environ
 from os.path import dirname, realpath, join, exists  # , split
 from json import load, dump
-from asdst_addin import asdst_extension  #, log, nice_test
+from asdst_addin import ASDST_EXTENSION  # , log, nice_test
 
 
 # class Config(object):
@@ -196,7 +196,6 @@ from asdst_addin import asdst_extension  #, log, nice_test
 
 
 class ConfigureTool(object):
-
     class ToolValidator(object):
         """Class for validating a tool's parameter values and controlling the behavior of the tool's dialog."""
 
@@ -209,11 +208,10 @@ class ConfigureTool(object):
             called when the tool is opened."""
 
             try:
-                cfg = asdst_extension.config.get_user_config()
+                cfg = ASDST_EXTENSION.config.get_user_config()
                 self.params[0].value = cfg[0]
                 self.params[1].value = cfg[1]
                 self.params[2].value = cfg[2]
-                pass
             except:
                 pass
 
@@ -232,7 +230,7 @@ class ConfigureTool(object):
             if self.params[2].value:
                 fields = ap.ListFields(self.params[2].value)
                 fieldnames = {f.name for f in fields}
-                codes = {k for k, v in asdst_extension.codes.iteritems()}
+                codes = {k for k, v in ASDST_EXTENSION.codes.iteritems()}
                 miss = codes - fieldnames
                 if miss:
                     self.params[2].setErrorMessage("Feature class does is missing required fields {}".format(", ".join(miss)))
@@ -245,7 +243,7 @@ class ConfigureTool(object):
         self.canRunInBackground = False
 
     def getParameterInfo(self):
-        pass
+        # pass
         # Source_Database
         param_1 = ap.Parameter()
         param_1.name = u'Source_Database'
@@ -254,7 +252,7 @@ class ConfigureTool(object):
         param_1.direction = 'Input'
         param_1.datatype = u'Workspace'
         try:
-            param_1.value = asdst_extension.config.source_fgdb
+            param_1.value = ASDST_EXTENSION.config.source_fgdb
         except:
             pass
 
@@ -266,7 +264,7 @@ class ConfigureTool(object):
         param_2.direction = 'Input'
         param_2.datatype = u'ArcMap Document'
         try:
-            param_2.value = asdst_extension.config.template_mxd  # u'C:\\AppData\\Local\\ASDST\\template.mxd'
+            param_2.value = ASDST_EXTENSION.config.template_mxd  # u'C:\\AppData\\Local\\ASDST\\template.mxd'
         except:
             pass
 
@@ -278,7 +276,7 @@ class ConfigureTool(object):
         param_3.direction = 'Input'
         param_3.datatype = u'Feature Class'
         try:
-            param_3.value = asdst_extension.config.ahims_sites
+            param_3.value = ASDST_EXTENSION.config.ahims_sites
         except:
             pass
 
@@ -298,9 +296,9 @@ class ConfigureTool(object):
             return validator(parameters).updateMessages()
 
     def execute(self, parameters, messages):
-        asdst_extension.config.set_user_config(parameters[0].valueAsText,
-                                             parameters[1].valueAsText,
-                                             parameters[2].valueAsText)
+        ASDST_EXTENSION.config.set_user_config(parameters[0].valueAsText,
+                                               parameters[1].valueAsText,
+                                               parameters[2].valueAsText)
 
         # pass
 
@@ -321,4 +319,3 @@ class ConfigureTool(object):
 #
 #     if __name__ == '__main__':
 #         main()
-

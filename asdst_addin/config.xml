@@ -5,51 +5,51 @@
     </AddInID>
     <Description>Aboriginal Site Decision Support Tools
     </Description>
-    <Version>0.1
+    <Version>0.11
     </Version><Image />
-    <Author>D.Bye KST, NSW OEH
+    <Author>D.Bye, KST, NSW OEH
     </Author>
     <Company>NSW OEH
     </Company>
-    <Date>2017-02-14 09:47
+    <Date>2017-02-28 10:25
     </Date>
     <Targets>
-        <Target name="Desktop" version="10.4" />
+        <Target name="Desktop" version="10.1" />
     </Targets>
     <AddIn language="PYTHON" library="asdst_addin.py" namespace="asdst_addin">
         <ArcMap>
             <Commands>
-                <Button caption="Create New ASDST Project"
-                        category="ASDST"
-                        class="CreateProjectButton"
-                        id="asdst_addin.cmd_create_project"
-                        image="Images/AddInDesktop16.png"
-                        message="This tool creates an empty ASDST project which is the first step in an ASDST analysis workflow"
-                        tip="Create Project">
-                    <Help heading="ASDST help ?">ASDST help to do
-                    </Help>
-                </Button>
-                <Button caption="Context Calculation"
-                        category="ASDST"
-                        class="CalculateContextButton"
-                        id="asdst_addin.cmd_calculate_context"
-                        image="Images/LocationGetPolygon16.png"
-                        message="Make a context calculation"
-                        tip="Make a context calculation">
-                    <Help
-                        heading="ASDST help ?">ASDST help to do
-                    </Help>
-                </Button>
-                <Button caption="Configure"
-                        category="ASDST"
-                        class="ConfigureButton"
-                        id="asdst_addin.cmd_configure"
-                        image="Images/GenericWrench_B16.png"
-                        message="Configure"
-                        tip="Check/set toolbox configuration">
-                    <Help heading="ASDST help ?">ASDST help to do
-                    </Help>
-                </Button>
+                <!--<Button caption="Create New ASDST Project"-->
+                        <!--category="ASDST"-->
+                        <!--class="CreateProjectButton"-->
+                        <!--id="asdst_addin.cmd_create_project"-->
+                        <!--image="Images/AddInDesktop16.png"-->
+                        <!--message="This tool creates an empty ASDST project which is the first step in an ASDST analysis workflow"-->
+                        <!--tip="Create Project">-->
+                    <!--<Help heading="ASDST help ?">ASDST help to do-->
+                    <!--</Help>-->
+                <!--</Button>-->
+                <!--<Button caption="Context Calculation"-->
+                        <!--category="ASDST"-->
+                        <!--class="CalculateContextButton"-->
+                        <!--id="asdst_addin.cmd_calculate_context"-->
+                        <!--image="Images/LocationGetPolygon16.png"-->
+                        <!--message="Make a context calculation"-->
+                        <!--tip="Make a context calculation">-->
+                    <!--<Help-->
+                        <!--heading="ASDST help ?">ASDST help to do-->
+                    <!--</Help>-->
+                <!--</Button>-->
+                <!--<Button caption="Configure"-->
+                        <!--category="ASDST"-->
+                        <!--class="ConfigureButton"-->
+                        <!--id="asdst_addin.cmd_configure"-->
+                        <!--image="Images/GenericWrench_B16.png"-->
+                        <!--message="Configure"-->
+                        <!--tip="Check/set toolbox configuration">-->
+                    <!--<Help heading="ASDST help ?">ASDST help to do-->
+                    <!--</Help>-->
+                <!--</Button>-->
                 <Button caption="ASDST"
                         category="ASDST"
                         class="asdst_addin.InfoButton"
@@ -70,9 +70,9 @@
                          id="asdst_addin.toolbar"  showInitially="true">
                     <Items>
                         <Button refID="asdst_addin.cmd_info" />
-                        <Button refID="asdst_addin.cmd_create_project" />
-                        <Button refID="asdst_addin.cmd_calculate_context" />
-                        <Button refID="asdst_addin.cmd_configure" />
+                        <!--<Button refID="asdst_addin.cmd_create_project" />-->
+                        <!--<Button refID="asdst_addin.cmd_calculate_context" />-->
+                        <!--<Button refID="asdst_addin.cmd_configure" />-->
                     </Items>
                 </Toolbar>
             </Toolbars>

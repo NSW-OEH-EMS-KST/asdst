@@ -2,7 +2,7 @@ import arcpy as ap
 from arcpy import env as env
 from os.path import join, split
 from os import system
-from asdst_addin import asdst_extension
+from asdst_addin import ASDST_EXTENSION
 
 
 class CreateProjectTool(object):
@@ -33,7 +33,6 @@ class CreateProjectTool(object):
             return
 
     def __init__(self):
-        # pass
         self.label = u'Create Project'
         self.description = "Create a new ASDST Project"
         self.canRunInBackground = True
@@ -84,7 +83,7 @@ class CreateProjectTool(object):
         param_4.parameterType = 'Required'
         param_4.direction = 'Input'
         param_4.datatype = u'Feature Set'
-        param_4.value = u'in_memory\\{714ADB01-ECAF-44AD-9CE1-0DE3ECF49BBB}'
+        # param_4.value = u'in_memory\\{714ADB01-ECAF-44AD-9CE1-0DE3ECF49BBB}'
 
         return [param_1, param_2, param_3, param_4]
 
@@ -119,19 +118,19 @@ class CreateProjectTool(object):
         self.loss = join(self.gdb, "project_loss")
         self.success = "ASDST project '{0}' launched in new window"
         self.success = self.success.format(self.raw_title)
-        self.layer_dict = asdst_extension.config.layer_dictionary(self.gdb)
+        self.layer_dict = ASDST_EXTENSION.config.layer_dictionary(self.gdb)
 
         # Make the required file system
         ok_msg = "Project {0} created: {1}"
         err_msg = "Error creating {0}: {1}"
         try:
-            ap.Copy_management(asdst_extension.config.template_project_gdb, self.gdb)
+            ap.Copy_management(ASDST_EXTENSION.config.template_project_gdb, self.gdb)
             add_message(ok_msg.format("geodatabase", self.gdb))
         except Exception as e:
             add_error(err_msg.format(self.gdb, e.message))
             raise ap.ExecuteError
         try:
-            ap.Copy_management(asdst_extension.config.template_mxd, self.mxd_file)
+            ap.Copy_management(ASDST_EXTENSION.config.template_mxd, self.mxd_file)
             add_message(ok_msg.format("map document", self.mxd_file))
             self.mxd = ap.mapping.MapDocument(self.mxd_file)
         except Exception as e:
@@ -177,14 +176,14 @@ class CreateProjectTool(object):
         add_message("Building data...")
 
         add_message("...clipping model reliability layer...")
-        src = join(asdst_extension.config.source_fgdb, "drvd_rel")
+        src = join(ASDST_EXTENSION.config.source_fgdb, "drvd_rel")
         add_message("... ...{0}".format(split(src)[1]))
         lcl = join(self.gdb, "drvd_rel")
         ap.Clip_management(src, "#", lcl, self.area, "#", "ClippingGeometry")
         self.layer_dict2["reliability"] = lcl
 
         add_message("...clipping survey priority layer...")
-        src = join(asdst_extension.config.source_fgdb, "drvd_srv")
+        src = join(ASDST_EXTENSION.config.source_fgdb, "drvd_srv")
         add_message("... ...{0}".format(split(src)[1]))
         lcl = join(self.gdb, "drvd_srv")
         ap.Clip_management(src, "#", lcl, self.area, "#", "ClippingGeometry")
@@ -193,7 +192,7 @@ class CreateProjectTool(object):
         add_message("...clipping regionalisation layers...")
         for i in range(1, 5):
             n = "aslu_lvl{0}".format(i)
-            src = join(asdst_extension.config.source_fgdb, n)
+            src = join(ASDST_EXTENSION.config.source_fgdb, n)
             add_message("... ...{0}".format(n))
             lcl = join(self.gdb, n)
             ap.Clip_analysis(src, self.area, lcl)
@@ -212,7 +211,7 @@ class CreateProjectTool(object):
                 pass
 
         add_message("...calculating current layers...")
-        src = join(asdst_extension.config.source_fgdb, "cu_param3")
+        src = join(ASDST_EXTENSION.config.source_fgdb, "cu_param3")
         lup = join(self.gdb, "cu_param3")
         ap.Clip_management(src, "#", lup, self.area, "#", "ClippingGeometry")
         loss_rasters = {}
@@ -278,31 +277,31 @@ class CreateProjectTool(object):
         del ic
 
         # Compact the FGDB workspace
-        add_message(asdst_extension.compact_fgdb(self.gdb))
+        add_message(ASDST_EXTENSION.compact_fgdb(self.gdb))
 
         # Add data to map
         add_message("Adding data layers to map...")
 
-        asdst_extension.add_table(self.mxd, self.loss)
+        ASDST_EXTENSION.add_table(self.mxd, self.loss)
 
         lyrs = {"Model Reliability": self.layer_dict2["reliability"]}
-        asdst_extension.add_layers(self.mxd, lyrs, "Derived", "relia")
+        ASDST_EXTENSION.add_layers(self.mxd, lyrs, "Derived", "relia")
 
         lyrs = {"Survey Priority": self.layer_dict2["priority"]}
-        asdst_extension.add_layers(self.mxd, lyrs, "Derived", "prior")
+        ASDST_EXTENSION.add_layers(self.mxd, lyrs, "Derived", "prior")
 
         lyrs = {"Accumulated Impact": self.layer_dict2["impact"]}
-        asdst_extension.add_layers(self.mxd, lyrs, "Derived", "accim")
+        ASDST_EXTENSION.add_layers(self.mxd, lyrs, "Derived", "accim")
 
         lyrs = {"Regionalisation Level {0}".format(i): self.layer_dict2["aslu_lvl{0}".format(i)] for i in
                 range(1, 5)}
-        asdst_extension.add_layers(self.mxd, lyrs, "Regionalisation", "regio")
+        ASDST_EXTENSION.add_layers(self.mxd, lyrs, "Regionalisation", "regio")
 
         lyrs = {v["name"]: v["1750_local"] for k, v in self.layer_dict.iteritems()}
-        asdst_extension.add_layers(self.mxd, lyrs, "Pre-1750", "model")
+        ASDST_EXTENSION.add_layers(self.mxd, lyrs, "Pre-1750", "model")
 
         lyrs = {v["name"]: v["curr_local"] for k, v in self.layer_dict.iteritems()}
-        asdst_extension.add_layers(self.mxd, lyrs, "Current", "model")
+        ASDST_EXTENSION.add_layers(self.mxd, lyrs, "Current", "model")
 
         # Save and report status
         self.mxd.save()

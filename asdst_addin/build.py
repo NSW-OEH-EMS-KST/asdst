@@ -1,4 +1,4 @@
-from os.path import split, join
+from os.path import split, join, exists
 from os import system, getcwd
 from shutil import copyfile
 from time import sleep, strftime
@@ -63,6 +63,9 @@ sleep(1)
 print "Replacing files"
 fn1 = split(cwd)[-1] + ".esriaddin"
 fn2 = r"C:\Users\byed\Documents\ArcGIS\AddIns\Desktop10.4\asdst_addin.esriaddin"
+if not exists(fn2):
+    fn2 = r"C:\Users\aspire\Documents\ArcGIS\AddIns\Desktop10.4\asdst_addin.esriaddin"
+
 copyfile(fn1, fn2)
 print "Files replaced"
 sleep(1)

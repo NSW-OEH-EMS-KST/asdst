@@ -1,5 +1,6 @@
 import arcpy as ap
 from arcpy import env as env
+import arcpy.mapping as am
 from os.path import join, split
 from os import system
 from asdst_addin import ASDST_EXTENSION
@@ -82,8 +83,19 @@ class CreateProjectTool(object):
         param_4.displayName = u'Project Area'
         param_4.parameterType = 'Required'
         param_4.direction = 'Input'
-        param_4.datatype = u'Feature Set'
-        # param_4.value = u'in_memory\\{714ADB01-ECAF-44AD-9CE1-0DE3ECF49BBB}'
+        param_4.datatype = u'GPFeatureRecordsetlayer'
+        # fs = ap.FeatureSet()
+        # fc = ap.CreateFeatureclass_management("in_memory", "fc", "POLYGON")
+        # fs.load(fc)
+        # try:
+        #     fc = ap.CreateFeatureclass_management("in_memory", "fc", "POLYGON")
+        #     # efs = ap.MakeFeatureLayer_management(ASDST_EXTENSION.config.empty_featureset_layer, "efs")
+        #     # efs.replaceDataSource(fc)  # p, "FILEGDB_WORKSPACE", n, validate=False)
+        #     # efs = am.Layer(ASDST_EXTENSION.config.empty_featureset_layer)
+        #     # # param_4.value = u'in_memory\\{714ADB01-ECAF-44AD-9CE1-0DE3ECF49BBB}'
+        #     param_4.value = fc
+        # except:
+        #     pass
 
         return [param_1, param_2, param_3, param_4]
 

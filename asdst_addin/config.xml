@@ -11,7 +11,7 @@
     </Author>
     <Company>NSW OEH
     </Company>
-    <Date>2017-03-01 13:42
+    <Date>2017-03-15 16:44
     </Date>
     <Targets>
         <Target name="Desktop" version="10.1" />
@@ -19,37 +19,37 @@
     <AddIn language="PYTHON" library="asdst_addin.py" namespace="asdst_addin">
         <ArcMap>
             <Commands>
-                <Button caption="Create New ASDST Project"
-                        category="ASDST"
-                        class="CreateProjectButton"
-                        id="asdst_addin.cmd_create_project"
-                        image="Images/AddInDesktop16.png"
-                        message="Create an empty ASDST project:the first step in an ASDST analysis workflow"
-                        tip="Create Project">
-                    <Help heading="ASDST help ?">ASDST help to do
-                    </Help>
-                </Button>
-                <Button caption="Stream Order"
-                        category="ASDST"
-                        class="StreamOrderButton"
-                        id="asdst_addin.cmd_stream_order"
-                        image="Images/LasSlope16.png"
-                        message="Calculate Stream Order Data"
-                        tip="Stream Order">
-                    <Help heading="ASDST help ?">ASDST help to do
-                    </Help>
-                </Button>
-                <Button caption="Context Calculation"
-                        category="ASDST"
-                        class="CalculateContextButton"
-                        id="asdst_addin.cmd_calculate_context"
-                        image="Images/LocationGetPolygon16.png"
-                        message="Make a context calculation"
-                        tip="Make a context calculation">
-                    <Help
-                        heading="ASDST help ?">ASDST help to do
-                    </Help>
-                </Button>
+                <!--<Button caption="Create New ASDST Project"-->
+                        <!--category="ASDST"-->
+                        <!--class="CreateProjectButton"-->
+                        <!--id="asdst_addin.cmd_create_project"-->
+                        <!--image="Images/AddInDesktop16.png"-->
+                        <!--message="Create an empty ASDST project:the first step in an ASDST analysis workflow"-->
+                        <!--tip="Create Project">-->
+                    <!--<Help heading="ASDST help ?">ASDST help to do-->
+                    <!--</Help>-->
+                <!--</Button>-->
+                <!--<Button caption="Stream Order"-->
+                        <!--category="ASDST"-->
+                        <!--class="StreamOrderButton"-->
+                        <!--id="asdst_addin.cmd_stream_order"-->
+                        <!--image="Images/LasSlope16.png"-->
+                        <!--message="Calculate Stream Order Data"-->
+                        <!--tip="Stream Order">-->
+                    <!--<Help heading="ASDST help ?">ASDST help to do-->
+                    <!--</Help>-->
+                <!--</Button>-->
+                <!--<Button caption="Context Calculation"-->
+                        <!--category="ASDST"-->
+                        <!--class="CalculateContextButton"-->
+                        <!--id="asdst_addin.cmd_calculate_context"-->
+                        <!--image="Images/LocationGetPolygon16.png"-->
+                        <!--message="Make a context calculation"-->
+                        <!--tip="Make a context calculation">-->
+                    <!--<Help-->
+                        <!--heading="ASDST help ?">ASDST help to do-->
+                    <!--</Help>-->
+                <!--</Button>-->
                 <Button caption="Configure"
                         category="ASDST"
                         class="ConfigureButton"
@@ -82,9 +82,9 @@
                     <Items>
                         <Button refID="asdst_addin.cmd_info" />
                         <Button refID="asdst_addin.cmd_configure" />
-                        <Button refID="asdst_addin.cmd_create_project" />
-                        <Button refID="asdst_addin.cmd_calculate_context" />
-                        <Button refID="asdst_addin.cmd_stream_order" />
+                        <!--<Button refID="asdst_addin.cmd_create_project" />-->
+                        <!--<Button refID="asdst_addin.cmd_calculate_context" />-->
+                        <!--<Button refID="asdst_addin.cmd_stream_order" />-->
                     </Items>
                 </Toolbar>
             </Toolbars>

@@ -1,6 +1,7 @@
 import arcpy as ap
 from os.path import split, join
-from asdst_addin import ASDST_EXTENSION, LOG
+import configure
+from asdst_addin import ASDST_EXTENSION  #, LOG
 
 
 class ContextCalculationTool(object):
@@ -117,8 +118,8 @@ class ContextCalculationTool(object):
     def execute(self, parameters, messages):
         # pass
         # Aliases
-        add_message = messages.addMessage
-        add_error = messages.addErrorMessage
+        # add_message = messages.addMessage
+        # add_error = messages.addErrorMessage
 
         # Get user inputs
         self.raw_title = parameters[0].valueAsText  # title
@@ -150,6 +151,7 @@ class ContextCalculationTool(object):
         err_msg = "Error creating {0}: {1}"
         try:
             ap.Copy_management(ASDST_EXTENSION.config.template_context_gdb, self.gdb)
+            ap.Copy_management(configure.template_context_gdb, self.gdb)
             add_message(ok_msg.format(self.gdb))
         except Exception as e:
             add_error(err_msg.format(self.gdb, e.message))

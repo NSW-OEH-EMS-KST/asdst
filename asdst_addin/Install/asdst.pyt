@@ -13,8 +13,9 @@ class Toolbox(object):
 
 
 def main():
-    pass
-
+    tbx = Toolbox()
+    tool = ConfigureTool()
+    tool.execute(tool.getParameterInfo(), None)
 
 if __name__ == "__main__":
     main()

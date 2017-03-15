@@ -1,609 +1,316 @@
+from __future__ import print_function
 import arcpy as ap
 import arcpy.mapping as am
 import pythonaddins as pa
-import logging
-from os import makedirs, environ
-from os.path import dirname, realpath, join, exists, split
-from json import load, dump
-from ast import literal_eval
+import os
+import sys
+sys.path.append(os.path.dirname(__file__))
+import log
+import configure
+import project
 
-# Globals for external modules
-ASDST_EXTENSION = None
-APPDATA_PATH = join(environ["USERPROFILE"], "AppData", "Local", "ASDST")
-LOG_FILE = join(APPDATA_PATH, "asdst.log")
-LOG = logging
+@log.log
+def addin_message(msg, mb=0):
+    return pa.MessageBox(msg, "ASDST Extension", mb)
 
+ASDST_CODES = {'AFT': "Stone artefact",
+               'ART': "Rock art",
+               'BUR': "Burial",
+               'ETM': "Earth mound",
+               'GDG': "Grinding groove",
+               'HTH': "Hearth or camp fire feature",
+               'SHL': "Shell midden",
+               'STQ': "Stone quarry",
+               'TRE': "Scarred tree"}
 
-class ArcLogHandler(logging.StreamHandler):
-    def emit(self, record):
-        msg = self.format(record)
-        message(msg)
-
-try:
-    logging.basicConfig(filename=LOG_FILE, filemode="w", level=logging.DEBUG,
-                        format="%(asctime)s %(levelname)s %(module)s - %(funcName)s: %(message)s",
-                        datefmt="%Y-%m-%d %H:%M:%S")
-    logging.info("module load")
-    ah = ArcLogHandler()
-    ah.setLevel(logging.INFO)
-    logging.getLogger().addHandler(ah)
-except:
-    pass
-
-
-class Config(object):
-    def __init__(self):
-        try:
-            self.long_name = "Aboriginal Site Decision Support Tools"
-            self.short_name = "ASDST"
-            self.version = "0.1"
-            self.script_path = dirname(realpath(__file__))
-            self.config_file = join(APPDATA_PATH, "config.json")
-            self.toolbox = join(self.script_path, "asdst.pyt")
-            self.errors = None
-            self.valid = None
-            self.status = ""
-            # template fgdbs
-            self.template_project_gdb = join(self.script_path, "project.gdb")
-            self.template_context_gdb = join(self.script_path, "context.gdb")
-            # empty model layers
-            self.empty_group_layer = join(self.script_path, "egl.lyr")
-            self.empty_model_layer = join(self.script_path, "eml.lyr")
-            self.empty_relia_layer = join(self.script_path, "erl.lyr")
-            self.empty_accim_layer = join(self.script_path, "eai.lyr")
-            self.empty_regio_layer = join(self.script_path, "eas.lyr")
-            self.empty_prior_layer = join(self.script_path, "esp.lyr")
-            self.empty_featureset_layer = join(self.script_path, "efs.lyr")
-            self.empty_layers = {"group": self.empty_group_layer,
-                                 "model": self.empty_model_layer,
-                                 "relia": self.empty_relia_layer,
-                                 "accim": self.empty_accim_layer,
-                                 "regio": self.empty_regio_layer,
-                                 "prior": self.empty_prior_layer}
-            # configurable settings
-            self.source_fgdb = join(APPDATA_PATH, "asdst_source.gdb")
-            self.template_mxd = join(APPDATA_PATH, "asdst_default.mxd")
-            self.ahims_sites = None
-            self.has_source_gdb = False
-            self.has_template_mxd = False
-        except Exception as e:
-            logging.error(e)
-
-    def layer_dictionary(self, local_workspace):
-        # type: (str) -> dict[str: dict[str: str]]
-        source_ws = self.source_fgdb
-        sfx_1750 = "_v7"
-        sfx_curr = "_current"
-        return {k: {"name": v,
-                    "1750_source": (join(source_ws, k.lower() + sfx_1750)),
-                    "1750_local": (join(local_workspace, k.lower() + "_1750")),
-                    "curr_local": (join(local_workspace, k.lower() + sfx_curr))}
-                for k, v in ASDST_EXTENSION.codes.iteritems()}
-
-    def set_user_config(self, source_fgdb, template_mxd, ahims_sites):
-        # type: (str, str, str) -> None
-        """ Saves setting to JSON file
-
-        Args:
-
-        Returns:
-
-        Raises:
-          No raising or catching
-
-        """
-        # message("set_usr_config")
-
-        errors = []
-        cfg = {}
-
-        if not ap.Exists(source_fgdb):
-            errors.append("Source file geodatabase does not exist")
-            cfg["source_fgdb"] = self.source_fgdb
-        else:
-            self.source_fgdb = source_fgdb
-            cfg["source_fgdb"] = source_fgdb
-
-        if not ap.Exists(template_mxd):
-            errors.append("Template map does not exist")
-            cfg["template_mxd"] = self.template_mxd
-        else:
-            self.template_mxd = template_mxd
-            cfg["template_mxd"] = template_mxd
-
-        if ahims_sites and not ap.Exists(ahims_sites):
-            errors.append("AHIMS site data '{0}' does not exist")
-            cfg["ahims_sites"] = self.ahims_sites
-        else:
-            self.ahims_sites = ahims_sites
-            cfg["ahims_sites"] = ahims_sites
-
-        cfg["errors"] = errors
-
-        with open(self.config_file, 'w') as f:
-            dump(cfg, f)
-
-        return
-
-    def get_user_config(self):
-        # type: () -> [str, str, str]
-        """ Saves settings to JSON file
-
-        Args:
-            None
-
-        Returns:
-            3-tuple of strings
-
-        Raises:
-            Nothing explicit
-
-        """
-        return self.source_fgdb, self.template_mxd, self.ahims_sites
-
-    def validate(self):
-        # type: () -> object
-        logging.debug("Config.validate")
-        self.errors = []
-
-        # check if the app data folder is there, if not create
-        if not exists(APPDATA_PATH):
-            try:
-                makedirs(APPDATA_PATH)
-            except Exception as e:
-                self.errors.append(e)
-
-        # check if the config file is there, if not create
-        if not exists(self.config_file):
-            try:
-                open(self.config_file, 'a').close()
-            except Exception as e:
-                self.errors.append(e)
-
-        cfg = {}
-        try:
-            with open(self.config_file, 'r') as f:
-                cfg = load(f)
-        except Exception as e:
-            self.errors.append(e)
-
-        self.source_fgdb = cfg.get("source_fgdb", "")
-        self.template_mxd = cfg.get("template_mxd", "")
-        self.ahims_sites = cfg.get("ahims_sites", "")
-
-        self.has_source_gdb = False
-        if not self.source_fgdb:
-            self.errors.append("Source FGDB is not set")
-        elif not ap.Exists(self.source_fgdb):
-            self.errors.append(
-                "Source FGDB '{0}' does not exist".format(self.source_fgdb))
-        else:
-            self.has_source_gdb = True
-
-        self.has_template_mxd = False
-        if not self.template_mxd:
-            self.errors.append("Template map is not set")
-        elif not ap.Exists(self.template_mxd):
-            self.errors.append(
-                "Template map '{0}' does not exist".format(self.template_mxd))
-        else:
-            self.has_template_mxd = True
-
-        if self.ahims_sites and not ap.Exists(self.ahims_sites):
-            self.errors.append(
-                "AHIMS site data '{0}' does not exist".format(self.ahims_sites))
-
-        v = "ASDST Version {0}".format(self.version)
-        e = self.errors
-        if not e:
-            e = u"No start-up errors identified."
-
-        ws = self.script_path
-        r = [ws,
-             item_exists_nice(self.toolbox, ws),
-             item_exists_nice(self.template_project_gdb, ws),
-             item_exists_nice(self.template_context_gdb, ws),
-             item_exists_nice(self.empty_group_layer, ws),
-             item_exists_nice(self.empty_model_layer, ws),
-             item_exists_nice(self.empty_relia_layer, ws),
-             item_exists_nice(self.empty_accim_layer, ws),
-             item_exists_nice(self.config_file, ws),
-             item_exists_nice(self.source_fgdb, ws, "Source FGDB"),
-             item_exists_nice(self.template_mxd, ws, "Template MXD"),
-             item_exists_nice(self.ahims_sites, ws, "AHIMS Sites")]
-
-        f = u"{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\nu{12}\n{13}"
-
-        self.status = f.format(v, e, *r)
-
-        logging.debug("Config.validate END")
-        return
-
-
-class Project(object):
-    def __init__(self):
-        # self.addin = addin
-        self.title = None
-        self.gdb = None
-        self.mxd = None
-        self.df = None
-        self.valid = None
-        self.status = None
-        self.missing_layers = True
-
-    def update(self):
-        logging.debug("Project.update")
-        try:
-            self.valid = False
-            self.mxd = am.MapDocument("CURRENT")
-            self.df = am.ListDataFrames(self.mxd)[0]
-            self.gdb = None
-            gdb = self.mxd.filePath.replace(".mxd", ".gdb")
-            if ap.Exists(gdb):  # standard case, same name as mxd
-                self.valid = True
-                self.gdb = gdb
-            else:  # mxd saved to a new name, go to tags
-                # tag = {"asdst_extension": "DO NOT EDIT THIS TAG",
-                #        "Version": 7,
-                #        "Title": self.sane_title,
-                #        "mxd": self.mxd,
-                #        "gdb": self.gdb}
-                # tag = str(tag).replace(",", ";")
-                tags = self.mxd.tags
-                if tags:
-                    tag_list = tags.split(",")
-                    tag = [t for t in tag_list if (("ASDST" in t) and ("gdb" in t))]
-                    if tag:
-                        tag = tag[0]
-                        tag = tag.replace(";", ",")
-                        tag = literal_eval(tag)
-                        gdb = tag.get("gdb", None)
-
-                        if gdb and exists(gdb):
-                            self.gdb = gdb
-                            self.valid = True
-
-            self.status = self.__get_layer_status()
-            self.missing_layers = (u"\t\u2716" in self.status)
-        except Exception as e:
-            logging.error(e)
-
-        logging.debug("Project.update END")
-        return
-
-    def __get_layer_status(self):
-        logging.debug("Project.__get_layer_status")
-        try:
-            ws = self.gdb if self.gdb else None
-            if not ws:
-                return "No ASDST Project Workspace"
-
-            f = u"{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\n" \
-                u"{12}\n{13}\n{14}\n{15}\n{16}\n{17}\n{18}"
-            r = [ws]
-            # self.missing_layers = []
-            for k, v in ASDST_EXTENSION.config.layer_dictionary(ws).iteritems():
-                r.append(item_exists_nice(v["1750_local"], ws))
-                r.append(item_exists_nice(v["curr_local"], ws))
-            return f.format(*r)
-        except Exception as e:
-            logging.error(e)
-
-        logging.debug("Project.__get_layer_status END")
-        return
-
-    def layer_dictionary(self):
-        return ASDST_EXTENSION.config.layer_dictionary(self.gdb)
-
-    def add_layers(self, layers, group_name, layer_type):
-        ASDST_EXTENSION.add_layers(self.mxd, layers, group_name, layer_type)
-
-    def add_table(self, mxd, table, name=""):
-        ASDST_EXTENSION.add_table(self.mxd, mxd, table, name)
-
-    def compact_fgdb(self):
-        ASDST_EXTENSION.compact_fgdb(self.gdb)
+ASDST_CODES_EX = {'ACD': "Aboriginal ceremony and dreaming",
+                  'ARG': "Aboriginal resource gathering",
+                  'AFT': "Stone artefact", 'ART': "Rock art",
+                  'BUR': "Burial", 'CFT': "Conflict site",
+                  'CMR': "Ceremonial ring", 'ETM': "Earth mound",
+                  'FSH': "Fish trap", 'GDG': "Grinding groove",
+                  'HAB': "Habitation structure",
+                  'HTH': "Hearth or camp fire feature",
+                  'OCQ': "Ochre quarry",
+                  'PAD': "Potential archaeological deposit",
+                  'SHL': "Shell midden", 'STA': "Stone arrangement",
+                  'STQ': "Stone quarry", 'TRE': "Scarred tree",
+                  'WTR': "Water feature"}
 
 
 PROTECTED = ["Areas of Interest", "Context", "Pre-1750", "Current", "ASDST"]
 
 
+configuration = configure.get_configuration(ASDST_CODES)
+log.configure_logging(configuration.log_file, log.DEBUG, addin_message)
+
+
 class InfoButton(object):
     """Implementation for asdst_extension_addin.cmd_label (Button)"""
 
+    @log.log
     def onClick(self):
-        logging.debug("InfoButton.onClick")
-
-        try:
-            msg = get_asdst_status()
-            logging.info(msg)
-        except Exception as e:
-            logging.error(e)
-
-        logging.debug("InfoButton.onClick END")
+        addin_message("onClick")
+        log.info("click!")
+        msg = get_asdst_status()
+        log.info(msg)
+        addin_message(msg)
         return
 
 
 class StreamOrderButton(object):
     """Implementation for asdst_extension_addin.cmd_stream_order (Button)"""
 
+    @log.log
     def onClick(self):
-        logging.debug("StreamOrderButton.onClick")
-
-        try:
-            msg = get_asdst_status()
-            logging.info(msg)
-        except Exception as e:
-            logging.error(e)
-
-        logging.debug("StreamOrderButton.onClick END")
+        # msg = get_asdst_status()
+        # log.info(msg)
         return
-
-
-def get_asdst_status():
-    # show the version, any error info and ASDST layer status
-    bar = '{0:-<60}'.format('')
-    msg = u"Configuration Status:\n{0}\n{1}\n\nProject Status:\n{0}\n{2}"
-    ASDST_EXTENSION.config.validate()
-    config_status = ASDST_EXTENSION.config.status
-    ASDST_EXTENSION.project.update()
-    project_status = ASDST_EXTENSION.project.status
-    msg = msg.format(bar, config_status, project_status)
-    return msg
 
 
 class CalculateContextButton(object):
     """Implementation for asdst_extension_addin.cmd_new_project (Button)"""
 
+    @log.log
     def onClick(self):
-        logging.debug("CalculateContextButton.onClick")
-        try:  # launch the calculate context tool
-            pa.GPToolDialog(ASDST_EXTENSION.config.toolbox, "ContextCalculationTool")
-        except Exception as e:
-            logging.error(e)
-
-        logging.debug("CalculateContextButton.onClick END")
+        # pa.GPToolDialog(ASDST_EXTENSION.config.toolbox, "ContextCalculationTool")
         return
 
 
 class CreateProjectButton(object):
     """Implementation for asdst_extension_addin.cmd_new_project (Button)"""
 
+    @log.log
     def onClick(self):
-        logging.debug("CreateProjectButton.onClick")
-        try:  # launch the new project tool
-            pa.GPToolDialog(ASDST_EXTENSION.config.toolbox, "CreateProjectTool")
-        except Exception as e:
-            logging.error(e)
+        # logging.debug("CreateProjectButton.onClick")
+        # try:  # launch the new project tool
+        # pa.GPToolDialog(ASDST_EXTENSION.config.toolbox, "CreateProjectTool")
+        # except Exception as e:
+        #     # logging.error(e)
+        #     pass
 
-        logging.debug("CreateProjectButton.onClick END")
+        # logging.debug("CreateProjectButton.onClick END")
         return
 
 
 class ConfigureButton(object):
     """Implementation for asdst_extension_addin.setup (Button)"""
 
+    @log.log
     def onClick(self):
-        try:  # launch the configuration tool
-            pa.GPToolDialog(ASDST_EXTENSION.config.toolbox, "ConfigureTool")
-            ASDST_EXTENSION.project.update()
-        except Exception as e:
-            logging.error(e)
+        addin_message("onClick")
+        # try:  # launch the configuration tool
+        # pa.GPToolDialog(ASDST_EXTENSION.config.toolbox, "ConfigureTool")
+        # ASDST_EXTENSION.project.validate()
+        # except Exception as e:
+        #     # logging.error(e)
+        #     pass
+        return
 
 
 class AsdstExtension(object):
     """Implementation for asdst_extension_addin.extension (Extension)"""
+
     # For performance considerations, remove all unused methods in this class.
 
+    @log.log
     def __init__(self):
-        logging.debug("AsdstExtension.__init__")
+        addin_message("__init__")
+        # logging.debug("AsdstExtension.__init__")
 
-        global ASDST_EXTENSION
-        ASDST_EXTENSION = self
+        # global ASDST_EXTENSION
+        # ASDST_EXTENSION = self
 
-        try:
-            self.codes = {'AFT': "Stone artefact", 'ART': "Rock art", 'BUR': "Burial",
-                          'ETM': "Earth mound", 'GDG': "Grinding groove",
-                          'HTH': "Hearth or camp fire feature", 'SHL': "Shell midden",
-                          'STQ': "Stone quarry", 'TRE': "Scarred tree"}
+        # self.config = Config(self)
+        # self.config.validate()
 
-            self.codes_ex = {'ACD': "Aboriginal ceremony and dreaming",
-                             'ARG': "Aboriginal resource gathering",
-                             'AFT': "Stone artefact", 'ART': "Rock art",
-                             'BUR': "Burial", 'CFT': "Conflict site",
-                             'CMR': "Ceremonial ring", 'ETM': "Earth mound",
-                             'FSH': "Fish trap", 'GDG': "Grinding groove",
-                             'HAB': "Habitation structure",
-                             'HTH': "Hearth or camp fire feature",
-                             'OCQ': "Ochre quarry",
-                             'PAD': "Potential archaeological deposit",
-                             'SHL': "Shell midden", 'STA': "Stone arrangement",
-                             'STQ': "Stone quarry", 'TRE': "Scarred tree",
-                             'WTR': "Water feature"}
+        # self.project = Project()
+        # self.project.validate()
+        #
+        # self.__enable_tools()
 
-            self.config = Config()
-            self.config.validate()
+        # except Exception as e:
+        #     pass
+        # logging.error(e)
 
-            self.project = Project()
-            self.project.update()
+        return
 
-            self.__enable_tools()
-
-        except Exception as e:
-            logging.error(e)
-
+    @log.log
     def startup(self):
-        logging.debug("AsdstExtension.startup")
-        try:
-            self.config.validate()
-            self.project.update()
-        except Exception as e:
-            logging.error(e)
-        logging.debug("AsdstExtension.startup END")
+        addin_message("startup")
+        addin_message(configuration.validate())
+        # addin_message(configuration.valid)
+        # addin_message(configuration.log_file)
+        log.configure_logging(configuration.log_file, log.DEBUG, addin_message)
 
+    @log.log
     def newDocument(self):
-        logging.debug("asdst_extension.newDocument")
-        try:
-            self.project.update()
-            self.__enable_tools()
-        except Exception as e:
-            logging.error(e)
+        addin_message("newDocument")
+        project.validate()
+        # self.__enable_tools()
+        return
 
+    @log.log
     def openDocument(self):
-        logging.debug("asdst_extension.openDocument")
-        try:
-            self.project.update()
-            self.__enable_tools()
-        except Exception as e:
-            logging.error(e)
-        logging.debug("asdst_extension.openDocument END")
-
-    def itemAdded(self, new_item):
-        logging.debug("asdst_extension.itemAdded")
-        try:
-            self.__enable_tools()
-        except Exception as e:
-            logging.error(e)
-        logging.debug("asdst_extension.itemAdded END")
-
-    def itemDeleted(self, deleted_item):
-        logging.debug("asdst_extension.itemDeleted")
-        try:
-            self.__enable_tools()
-        except Exception as e:
-            logging.error(e)
-        logging.debug("asdst_extension.itemDeleted END")
-
-    def __enable_tools(self):
-        logging.debug("asdst_extensionExtension.__enable_tools")
-        if not self.config:
-            raise ValueError("No Config")
-        if not self.project:
-            raise ValueError("No project")
-        try:
-
-            CreateProjectButton.enabled = False
-            CalculateContextButton.enabled = False
-
-            if self.config.errors:
-                logging.debug(self.config.errors)
-                return
-
-            logging.debug("Listing layers in {}".format(self.project.mxd))
-            try:
-                lyrs = am.ListLayers(self.project.mxd)
-                if lyrs:  # require at least one layer for context
-                    logging.debug("Enabling CreateProjectButton")
-                    CreateProjectButton.enabled = True
-            except Exception as e:
-                logging.error(e)
-            logging.debug("Layers: {}".format(lyrs))
-
-            if not self.project.valid:
-                logging.debug("Invalid project, returning")
-                return
-            CalculateContextButton.enabled = not self.project.missing_layers
-
-            logging.debug("asdst_extensionExtension.enable_tools END")
-        except Exception as e:
-            logging.error(e)
-
-    def add_table(self, mxd, table, name=""):
-        logging.debug("Adding {0}".format(table))
-
-        # ap.AddMessage("mxd = {0}".format(mxd))
-        df = am.ListDataFrames(mxd)[0]
-        tv = am.TableView(table)
-        if name:
-            tv.name = name
-        am.AddTableView(df, tv)
-        logging.debug("...table '{0}' added".format(tv.name))
-
-    def add_layers(self, mxd, layers, group_name, layer_type):
-        # layers is a {name: datasource} dictionary
-
-        if isinstance(mxd, basestring):
-            mxd = am.MapDocument(mxd)
-
-        df = am.ListDataFrames(mxd)[0]
-        lyr_file = self.config.empty_layers.get(layer_type, None)
-        glyr = None
-
-        if group_name:  # try to find the group
-            lyrs = am.ListLayers(mxd, group_name, df)
-            glyr = lyrs[0] if lyrs else None
-            if not glyr:  # not found, so create it
-                glyr = am.Layer(self.config.empty_group_layer)
-                glyr.name = group_name
-                am.AddLayer(df, glyr)
-            # this line is required, arc must add a deep copy or something?
-            # anyway without this there is an exception raised
-            glyr = am.ListLayers(mxd, group_name, df)[0]
-
-        for k, v in layers.iteritems():
-            if not lyr_file:
-                lyr = am.Layer(v)
-            else:
-                lyr = am.Layer(lyr_file)
-                p, n = split(v)
-                lyr.replaceDataSource(p, "FILEGDB_WORKSPACE", n, validate=False)
-            lyr.name = k
-            if glyr:
-                am.AddLayerToGroup(df, glyr, lyr)
-                logging.debug("...'{0}' layer added to group '{1}'".format(lyr.name,
-                                                                 glyr.name))
-            else:
-                am.AddLayer(df, lyr)
-                logging.debug("...'{0}' layer added".format(lyr.name))
-
-    def compact_fgdb(self, gdb):
-        from glob import glob
-        from os.path import getsize
-        sz = 0
-        mb = 1024 * 1024
-
-        if gdb and ap.Exists(gdb):
-            for f in glob(gdb + "\\*"):
-                sz += getsize(f)
-            sz /= mb
-            # ap.AddMessage("Size of database '{0}' is ~ {1} MB".format(gdb, sz))
+        addin_message("openDocument")
+        project.validate()
+        # self.__enable_tools()
+        return
 
 
-def message(msg, mb=0):
-    try:
-        return pa.MessageBox(msg, "ASDST Extension", mb)
-    except:
-        pass
+@log.log
+def get_asdst_status():
+    bar = '{0:-<60}'.format('')
+    msg = u"Configuration Status:\n{0}\n{1}\n\nProject Status:\n{0}\n{2}"
+    config_status = configuration.get_config_status()
+    # config_status = self.config.config.status
+    # ASDST_EXTENSION.project.validate()
+    # project_status = ASDST_EXTENSION.project.status
+    project_status = project.get_project_status()
+    msg = msg.format(bar, config_status, project_status)
+    return msg
 
 
-def is_within_project_area(area):
-    prj_lyr = am.ListLayers(am.MapDocument("CURRENT"), "Project Area")
-    if not prj_lyr:
-        raise Exception("No layer called 'Project Area'")
+        # @log.log
+        # def itemAdded(self, new_item):
+        #     self.__enable_tools()
+        #     return
 
-    mlyr = join("in_memory", "tmp")
-    ap.MakeFeatureLayer_management(area, mlyr)
-    ap.SelectLayerByLocation_management(mlyr, 'WITHIN', prj_lyr)
+        # def itemDeleted(self, deleted_item):
+        #     self.__enable_tools()
+        #     return
 
-    count = int(ap.GetCount_management(mlyr).getOutput(0))
+        # @log.log
+        # def __enable_tools(self):
+        #
+        #     if not self.config:
+        #         raise ValueError("No Config")
+        #     if not self.project:
+        #         raise ValueError("No project")
+        #
+        #     CreateProjectButton.enabled = False
+        #     CalculateContextButton.enabled = False
+        #     StreamOrderButton.enabled = False
+        #
+        #     if self.config.errors:
+        #         log.debug("config errors: {}".format(self.config.errors))
+        #         return
+        #
+        #     log.debug("Listing layers in {}".format(self.project.mxd))
+        #
+        #     lyrs = am.ListLayers(self.project.mxd)
+        #     if lyrs:  # require at least one layer for context
+        #         log.debug("Enabling CreateProjectButton")
+        #         CreateProjectButton.enabled = True
+        #
+        #     log.debug("Layers: {}".format(lyrs))
+        #
+        #     if not self.project.valid:
+        #         log.debug("Invalid project, returning")
+        #         return
+        #     CalculateContextButton.enabled = not self.project.missing_layers
+        #
+        #         # StreamOrderButton... tODO
+        #
+        #     return
 
-    return count > 0
+
+@log.log
+def add_table(mxd, table, name=""):
+    df = am.ListDataFrames(mxd)[0]
+    tv = am.TableView(table)
+    if name:
+        tv.name = name
+    am.AddTableView(df, tv)
+    return
 
 
-def item_exists_nice(thing_to_check, thing_possible_base, thing_name=""):
-    good = u"\t\u2714"
-    bad = u"\t\u2716"
-    u = u"{0: <20}{1}"
+@log.log
+def add_layers(mxd, layers, group_name, layer_type):
+    # layers is a {name: datasource} dictionary
 
-    try:
-        x2 = unicode(thing_to_check.replace(thing_possible_base, "..."))
-    except:
-        x2 = u"Something went wrong"
+    if isinstance(mxd, basestring):
+        mxd = am.MapDocument(mxd)
 
-    if not thing_to_check or not ap.Exists(thing_to_check):
-        if thing_name:
-            x2 = unicode(thing_name)
-        return u.format(x2, bad)
+    df = am.ListDataFrames(mxd)[0]
+    lyr_file = configuration.empty_layers.get(layer_type, None)
+    glyr = None
 
-    return u.format(x2, good)
+    if group_name:  # try to find the group
+        lyrs = am.ListLayers(mxd, group_name, df)
+        glyr = lyrs[0] if lyrs else None
+        if not glyr:  # not found, so create it
+            glyr = am.Layer(configuration.empty_group_layer)
+            glyr.name = group_name
+            am.AddLayer(df, glyr)
+        # this line is required, arc must add a deep copy or something?
+        # anyway without this there is an exception raised
+        glyr = am.ListLayers(mxd, group_name, df)[0]
 
+    for k, v in layers.iteritems():
+        if not lyr_file:
+            lyr = am.Layer(v)
+        else:
+            lyr = am.Layer(lyr_file)
+            p, n = os.path.split(v)
+            lyr.replaceDataSource(p, "FILEGDB_WORKSPACE", n, validate=False)
+        lyr.name = k
+        if glyr:
+            am.AddLayerToGroup(df, glyr, lyr)
+            log.debug("...'{0}' layer added to group '{1}'".format(lyr.name,
+                                                             glyr.name))
+        else:
+            am.AddLayer(df, lyr)
+            log.debug("...'{0}' layer added".format(lyr.name))
+
+
+def compact_fgdb(gdb):
+    from glob import glob
+    from os.path import getsize
+
+    sz = 0
+    mb = 1024 * 1024
+
+    if gdb and ap.Exists(gdb):
+        for f in glob(gdb + "\\*"):
+            sz += getsize(f)
+        sz /= mb
+
+    return "Size of database '{0}' is ~ {1} MB".format(gdb, sz)
+
+
+project = project.get_project(configuration, add_layers, add_table, compact_fgdb)
+
+# def is_within_project_area(area):
+#     prj_lyr = am.ListLayers(am.MapDocument("CURRENT"), "Project Area")
+#     if not prj_lyr:
+#         raise Exception("No layer called 'Project Area'")
+#
+#     mlyr = join("in_memory", "tmp")
+#     ap.MakeFeatureLayer_management(area, mlyr)
+#     ap.SelectLayerByLocation_management(mlyr, 'WITHIN', prj_lyr)
+#
+#     count = int(ap.GetCount_management(mlyr).getOutput(0))
+#
+#     return count > 0
+
+
+# @log.log
+# def item_exists_nice(thing_to_check, thing_possible_base, thing_name=""):
+#     # good = u"\t\u2714"
+#     # bad = u"\t\u2716"
+#     good = u"\u2714"
+#     bad = u"\u2716"
+#     # u = u"{0: <20}{1}"
+#     u = u"{0} {1}"
+#
+#     x = unicode(thing_to_check.replace(thing_possible_base, "..."))
+#
+#     if not thing_to_check or not ap.Exists(thing_to_check):
+#         if thing_name:
+#             x = unicode(thing_name)
+#         ret = u.format(x, bad)
+#     else:
+#         ret = u.format(x, good)
+#
+#     return ret

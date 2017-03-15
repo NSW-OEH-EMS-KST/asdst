@@ -1,198 +1,205 @@
 import arcpy as ap
-from os import makedirs, environ
-from os.path import dirname, realpath, join, exists  # , split
-from json import load, dump
-from asdst_addin import ASDST_EXTENSION  # , log, nice_test
+import os
+import log
+import json
+import utils
 
 
-# class Config(object):
-#     def __init__(self):
-#         self.long_name = "Aboriginal Site Decision Support Tools"
-#         self.short_name = "ASDST"
-#         self.version = "0.1"
-#         self.script_path = dirname(realpath(__file__))
-#         self.appdata_path = join(environ["USERPROFILE"], "AppData", "Local", "ASDST")
-#         self.config_file = join(self.appdata_path, "config.json")
-#         self.toolbox = join(self.script_path, "ASDST.pyt")
-#         self.errors = None
-#         self.valid = None
-#         self.status = ""
-#         # template fgdbs
-#         self.template_project_gdb = join(self.script_path, "project.gdb")
-#         self.template_context_gdb = join(self.script_path, "context.gdb")
-#         # empty model layers
-#         self.empty_group_layer = join(self.script_path, "egl.lyr")
-#         self.empty_model_layer = join(self.script_path, "eml.lyr")
-#         self.empty_relia_layer = join(self.script_path, "erl.lyr")
-#         self.empty_accim_layer = join(self.script_path, "eai.lyr")
-#         self.empty_regio_layer = join(self.script_path, "eas.lyr")
-#         self.empty_prior_layer = join(self.script_path, "esp.lyr")
-#         self.empty_layers = {"group": self.empty_group_layer,
-#                              "model": self.empty_model_layer,
-#                              "relia": self.empty_relia_layer,
-#                              "accim": self.empty_accim_layer,
-#                              "regio": self.empty_regio_layer,
-#                              "prior": self.empty_prior_layer}
-#         # configurable settings
-#         self.source_fgdb = join(self.appdata_path, "asdst_source.gdb")
-#         self.template_mxd = join(self.appdata_path, "asdst_default.mxd")
-#         self.log_file = join(self.appdata_path, "asdst.log")
-#         self.ahims_sites = None
-#         self.has_source_gdb = False
-#         self.has_template_mxd = False
-#         # logging
-#         # global log
-#         # log = logging
-#         log.basicConfig(filename=self.log_file, filemode="w", level=log.DEBUG)
-#         log.debug("Config.__init__: " + str(locals()))
-#
-#     def layer_dictionary(self, local_workspace):
-#         # type: (str) -> dict[str: dict[str: str]]
-#         source_ws = self.source_fgdb
-#         sfx_1750 = "_v7"
-#         sfx_curr = "_current"
-#         return {k: {"name": v,
-#                     "1750_source": (join(source_ws, k.lower() + sfx_1750)),
-#                     "1750_local": (join(local_workspace, k.lower() + "_1750")),
-#                     "curr_local": (join(local_workspace, k.lower() + sfx_curr))}
-#                 for k, v in asdst_extension.codes.iteritems()}
-#
-#     def set_user_config(self, source_fgdb, template_mxd, ahims_sites):
-#         # type: (str, str, str) -> None
-#         """ Saves setting to JSON file
-#
-#         Args:
-#
-#         Returns:
-#
-#         Raises:
-#           No raising or catching
-#
-#         """
-#         # message("set_usr_config")
-#
-#         errors = []
-#         cfg = {}
-#
-#         if not ap.Exists(source_fgdb):
-#             errors.append("Source file geodatabase does not exist")
-#             cfg["source_fgdb"] = self.source_fgdb
-#         else:
-#             self.source_fgdb = source_fgdb
-#             cfg["source_fgdb"] = source_fgdb
-#
-#         if not ap.Exists(template_mxd):
-#             errors.append("Template map does not exist")
-#             cfg["template_mxd"] = self.template_mxd
-#         else:
-#             self.template_mxd = template_mxd
-#             cfg["template_mxd"] = template_mxd
-#
-#         if ahims_sites and not ap.Exists(ahims_sites):
-#             errors.append("AHIMS site data '{0}' does not exist")
-#             cfg["ahims_sites"] = self.ahims_sites
-#         else:
-#             self.ahims_sites = ahims_sites
-#             cfg["ahims_sites"] = ahims_sites
-#
-#         cfg["errors"] = errors
-#
-#         with open(self.config_file, 'w') as f:
-#             dump(cfg, f)
-#
-#         return
-#
-#     def get_user_config(self):
-#         # type: () -> [str, str, str]
-#         """ Saves settings to JSON file
-#
-#         Returns:
-#             3-tuple of strings
-#
-#         Raises:
-#             Nothing explicit
-#
-#         """
-#         return self.source_fgdb, self.template_mxd, self.ahims_sites
-#
-#     def validate(self):
-#         # type: () -> object
-#         # asdst.message("Config.validate")
-#         self.errors = []
-#
-#         # check if the app data folder is there, if not create
-#         if not exists(self.appdata_path):
-#             try:
-#                 makedirs(self.appdata_path)
-#             except Exception as e:
-#                 self.errors.append(e)
-#
-#         # check if the config file is there, if not create
-#         if not exists(self.config_file):
-#             try:
-#                 open(self.config_file, 'a').close()
-#             except Exception as e:
-#                 self.errors.append(e)
-#
-#         cfg = {}
-#         try:
-#             with open(self.config_file, 'r') as f:
-#                 cfg = load(f)
-#         except Exception as e:
-#             self.errors.append(e)
-#
-#         self.source_fgdb = cfg.get("source_fgdb", "")
-#         self.template_mxd = cfg.get("template_mxd", "")
-#         self.ahims_sites = cfg.get("ahims_sites", "")
-#
-#         self.has_source_gdb = False
-#         if not self.source_fgdb:
-#             self.errors.append("Source FGDB is not set")
-#         elif not ap.Exists(self.source_fgdb):
-#             self.errors.append(
-#                 "Source FGDB '{0}' does not exist".format(self.source_fgdb))
-#         else:
-#             self.has_source_gdb = True
-#
-#         self.has_template_mxd = False
-#         if not self.template_mxd:
-#             self.errors.append("Template map is not set")
-#         elif not ap.Exists(self.template_mxd):
-#             self.errors.append(
-#                 "Template map '{0}' does not exist".format(self.template_mxd))
-#         else:
-#             self.has_template_mxd = True
-#
-#         if self.ahims_sites and not ap.Exists(self.ahims_sites):
-#             self.errors.append(
-#                 "AHIMS site data '{0}' does not exist".format(self.ahims_sites))
-#
-#         v = "ASDST Version {0}".format(self.version)
-#         e = self.errors
-#         if not e:
-#             e = u"No start-up errors identified."
-#
-#         ws = self.script_path
-#         r = [ws,
-#              nice_test(self.toolbox, ws),
-#              nice_test(self.template_project_gdb, ws),
-#              nice_test(self.template_context_gdb, ws),
-#              nice_test(self.empty_group_layer, ws),
-#              nice_test(self.empty_model_layer, ws),
-#              nice_test(self.empty_relia_layer, ws),
-#              nice_test(self.empty_accim_layer, ws),
-#              nice_test(self.config_file, ws),
-#              nice_test(self.source_fgdb, ws, "Source FGDB"),
-#              nice_test(self.template_mxd, ws, "Template MXD"),
-#              nice_test(self.ahims_sites, ws, "AHIMS Sites")]
-#
-#         f = u"{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}\n{9}\n{10}\n{11}\nu{12}\n{13}"
-#
-#         self.status = f.format(v, e, *r)
-#
-#         # asdst.message("Config.validate END")
-#         return
-#
+class Configuration(object):
+    @log.log
+    def __init__(self, codes):
+        self.codes = codes
+
+        # status stuff
+        self.errors = []
+        self.valid = False
+
+        # important files
+        self.script_path = os.path.dirname(os.path.realpath(__file__))
+
+        self.appdata_path = os.path.join(os.environ["USERPROFILE"], "AppData", "Local", "ASDST")
+        try:
+            if not os.path.exists(self.appdata_path):
+                os.makedirs(self.appdata_path)
+        except Exception as e:
+            self.errors.append("Could not create {}".format(self.appdata_path))
+
+        self.config_file = os.path.join(self.appdata_path, "config.json")
+        if not os.path.exists(self.config_file):
+            try:
+                open(self.config_file, 'a').close()
+            except Exception as e:
+                self.errors.append("Could not create {}".format(self.config_file))
+
+        self.log_file = os.path.join(self.appdata_path, "asdst.log")
+        try:
+            if not os.path.exists(self.log_file):
+                open(self.log_file, 'a').close()
+        except Exception as e:
+            self.errors.append("Could not create {}".format(self.log_file))
+
+        self.toolbox = os.path.join(self.script_path, "ASDST.pyt")
+
+        # template fgdbs
+        self.template_project_gdb = os.path.join(self.script_path, "project.gdb")
+        self.template_context_gdb = os.path.join(self.script_path, "context.gdb")
+
+        # empty model layers
+        self.empty_group_layer = os.path.join(self.script_path, "egl.lyr")
+        self.empty_model_layer = os.path.join(self.script_path, "eml.lyr")
+        self.empty_relia_layer = os.path.join(self.script_path, "erl.lyr")
+        self.empty_accim_layer = os.path.join(self.script_path, "eai.lyr")
+        self.empty_regio_layer = os.path.join(self.script_path, "eas.lyr")
+        self.empty_prior_layer = os.path.join(self.script_path, "esp.lyr")
+        self.empty_layers = {"group": self.empty_group_layer,
+                             "model": self.empty_model_layer,
+                             "relia": self.empty_relia_layer,
+                             "accim": self.empty_accim_layer,
+                             "regio": self.empty_regio_layer,
+                             "prior": self.empty_prior_layer}
+
+        # configurable settings
+        self.source_fgdb = os.path.join(self.appdata_path, "asdst_source.gdb")
+        self.template_mxd = os.path.join(self.appdata_path, "asdst_default.mxd")
+        self.ahims_sites = ""
+
+        with open(self.config_file, 'r') as f:
+            cfg = json.load(f)
+            s = cfg.get("source_fgdb", "")
+            t = cfg.get("template_mxd", "")
+            a = cfg.get("ahims_sites", "")
+        if s:
+            self.source_fgdb = s
+        if t:
+            self.template_mxd = t
+        if a:
+            self.ahims_sites = a
+
+        self.validate()
+        return
+
+    @log.log
+    def validate(self):
+        # type: () -> [[str, str, str]]
+        """ Validate the configuration
+
+        :return:
+        """
+        result = [utils.exists_tuple("Python Toolbox", self.toolbox),
+                  utils.exists_tuple("Log File", self.log_file),
+                  utils.exists_tuple("Template Project FGDB", self.template_project_gdb),
+                  utils.exists_tuple("Template Context FGDB", self.template_context_gdb),
+                  utils.exists_tuple("Template GROUP Layer", self.empty_group_layer),
+                  utils.exists_tuple("Template MODEL Layer", self.empty_model_layer),
+                  utils.exists_tuple("Template RELIA Layer", self.empty_relia_layer),
+                  utils.exists_tuple("Template ACCIM Layer", self.empty_accim_layer),
+                  utils.exists_tuple("Template REGIO Layer", self.empty_regio_layer),
+                  utils.exists_tuple("Template PRIOR Layer", self.empty_prior_layer),
+                  utils.exists_tuple("Configuration File", self.config_file),
+                  utils.exists_tuple("Source FGDB", self.source_fgdb),
+                  utils.exists_tuple("Template MXD", self.template_mxd),
+                  utils.exists_tuple("AHIMS Sites", self.ahims_sites)]
+
+        x = [c for a, b, c in result[:-1]]  # Ahims is optional
+        self.valid = not (False in x)
+        # print not (False in x)
+        print("validate= {}".format(result))
+        log.debug("validate= {}".format(result))
+
+        return result
+
+    @log.log
+    def set_user_config(self, source_fgdb, template_mxd, ahims_sites):
+        # type: (str, str, str) -> None
+        """ Saves settings to JSON file
+
+        :param source_fgdb:
+        :param template_mxd:
+        :param ahims_sites:
+        :return:
+        """
+
+        cfg = {}
+
+        self.source_fgdb = source_fgdb
+        cfg["source_fgdb"] = source_fgdb
+
+        self.template_mxd = template_mxd
+        cfg["template_mxd"] = template_mxd
+
+        self.ahims_sites = ahims_sites
+        cfg["ahims_sites"] = ahims_sites
+
+        with open(self.config_file, 'w') as f:
+            json.dump(cfg, f)
+
+        return
+
+    @log.log
+    def get_user_config(self):
+        # type: () -> [str, str, str]
+        """ Saves settings to JSON file
+
+        Returns:
+            3-tuple of strings
+
+        Raises:
+
+        """
+        return [self.source_fgdb, self.template_mxd, self.ahims_sites]
+
+    @log.log
+    def get_config_status(self):
+        true = u"\u2714"
+        false = u"\u2716"
+        fmt = u"{} {}"
+
+        s = self.validate()
+        x = [[unicode(desc), [false, true][value]] for desc, item, value in s]
+        y = [fmt.format(desc, value) for desc, value in x]
+        y.append("THE CONFIGURATION IS " + ["INVALID", "VALID"][self.valid])
+
+        return "\n".join(y)
+
+    @log.log
+    def layer_dictionary(self, local_workspace):
+        # type: (str) -> dict[str: dict[str: str]]
+        """ Build a dict of layers
+
+        :param local_workspace:
+        :return:
+        """
+        if not local_workspace:
+            print("local_workspace not set")
+            return {}
+
+        if not self.codes:
+            print("codes not set")
+            return {}
+
+        if not self.source_fgdb:
+            print("self.source_fgdb not set")
+            return {}
+
+        source_ws = self.source_fgdb
+        sfx_1750 = "_v7"
+        sfx_curr = "_current"
+
+        d = {k: {"name": v,
+                 "1750_source": (os.path.join(source_ws, k.lower() + sfx_1750)),
+                 "1750_local": (os.path.join(local_workspace, k.lower() + "_1750")),
+                 "curr_local": (os.path.join(local_workspace, k.lower() + sfx_curr))}
+             for k, v in self.codes.iteritems()}
+
+        return d
+
+CONFIG = None
+
+
+def get_configuration(codes):
+    global CONFIG
+    CONFIG = Configuration(codes)
+    return CONFIG
 
 
 class ConfigureTool(object):
@@ -203,17 +210,15 @@ class ConfigureTool(object):
             """Setup arcpy and the list of tool parameters."""
             self.params = parameters
 
+        @log.log
         def initializeParameters(self):
             """Refine the properties of a tool's parameters.  This method is
             called when the tool is opened."""
 
-            try:
-                cfg = ASDST_EXTENSION.config.get_user_config()
-                self.params[0].value = cfg[0]
-                self.params[1].value = cfg[1]
-                self.params[2].value = cfg[2]
-            except:
-                pass
+            # cfg = configuration.get_user_config()
+            self.params[0].value = CONFIG.source_fgdb  # cfg[0]
+            self.params[1].value = CONFIG.template_mxd  # cfg[1]
+            self.params[2].value = CONFIG.ahims_sites  # cfg[2]
 
             return
 
@@ -227,13 +232,15 @@ class ConfigureTool(object):
         def updateMessages(self):
             """Modify the messages created by internal validation for each tool
             parameter.  This method is called after internal validation."""
+            # import asdst_addin
             if self.params[2].value:
                 fields = ap.ListFields(self.params[2].value)
                 fieldnames = {f.name for f in fields}
-                codes = {k for k, v in ASDST_EXTENSION.codes.iteritems()}
-                miss = codes - fieldnames
-                if miss:
-                    self.params[2].setErrorMessage("Feature class does is missing required fields {}".format(", ".join(miss)))
+                codes = {k for k, v in self.codes.iteritems()}
+                missing = codes - fieldnames
+                if missing:
+                    self.params[2].setErrorMessage(
+                        "Feature class is missing required fields {}".format(", ", os.path.os.path.join(missing)))
 
             return
 
@@ -252,7 +259,7 @@ class ConfigureTool(object):
         param_1.direction = 'Input'
         param_1.datatype = u'Workspace'
         try:
-            param_1.value = ASDST_EXTENSION.config.source_fgdb
+            param_1.value = CONFIG.source_fgdb
         except:
             pass
 
@@ -264,7 +271,7 @@ class ConfigureTool(object):
         param_2.direction = 'Input'
         param_2.datatype = u'ArcMap Document'
         try:
-            param_2.value = ASDST_EXTENSION.config.template_mxd  # u'C:\\AppData\\Local\\ASDST\\template.mxd'
+            param_2.value = CONFIG.template_mxd
         except:
             pass
 
@@ -275,10 +282,7 @@ class ConfigureTool(object):
         param_3.parameterType = 'Optional'
         param_3.direction = 'Input'
         param_3.datatype = u'Feature Class'
-        try:
-            param_3.value = ASDST_EXTENSION.config.ahims_sites
-        except:
-            pass
+        param_3.value = CONFIG.ahims_sites
 
         return [param_1, param_2, param_3]
 
@@ -289,33 +293,40 @@ class ConfigureTool(object):
         validator = getattr(self, 'ToolValidator', None)
         if validator:
             return validator(parameters).updateParameters()
+        return
 
     def updateMessages(self, parameters):
         validator = getattr(self, 'ToolValidator', None)
         if validator:
             return validator(parameters).updateMessages()
+        return
 
     def execute(self, parameters, messages):
-        ASDST_EXTENSION.config.set_user_config(parameters[0].valueAsText,
-                                               parameters[1].valueAsText,
-                                               parameters[2].valueAsText)
+        if parameters and messages:
+            CONFIG.set_user_config(parameters[0].valueAsText,
+                                          parameters[1].valueAsText,
+                                          parameters[2].valueAsText)
 
-        # pass
+        return
 
-# def main():
-#         """ Main entry
-#
-#         Args:
-#
-#         Returns:
-#
-#         Raises:
-#           No raising or catching
-#
-#         """
-#         asdst_extension.config.set_user_config(parameters[0].valueAsText,
-#                                      parameters[1].valueAsText,
-#                                      parameters[2].valueAsText)
-#
-#     if __name__ == '__main__':
-#         main()
+
+def main():
+    """ Main entry
+
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
+    # set_user_config(parameters[0].valueAsText,
+    #                              parameters[1].valueAsText,
+    #                              parameters[2].valueAsText)
+    pass
+
+
+# validate()
+
+if __name__ == '__main__':
+    main()

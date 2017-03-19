@@ -50,10 +50,10 @@ class InfoButton(object):
 
     @log.log
     def onClick(self):
-        addin_message("onClick")
-        log.info("click!")
+        # addin_message("onClick")
+        # log.info("click!")
         msg = get_asdst_status()
-        log.info(msg)
+        # log.info(msg)
         addin_message(msg)
         return
 

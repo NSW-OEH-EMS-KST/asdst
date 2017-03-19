@@ -5,29 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9e28cf7a-ce66-4413-9b6d-bf0192638de3" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/asdst_addin/Install/log.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/asdst_addin/Install/utils.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000005.CatItemTypesByName.atx" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000005.CatItemTypesByName.atx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000005.CatItemTypesByParentTypeID.atx" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000005.CatItemTypesByParentTypeID.atx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000005.CatItemTypesByUUID.atx" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000005.CatItemTypesByUUID.atx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000005.gdbtable" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000005.gdbtable" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000005.gdbtablx" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000005.gdbtablx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByBackwardLabel.atx" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByBackwardLabel.atx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByDestItemTypeID.atx" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByDestItemTypeID.atx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByForwardLabel.atx" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByForwardLabel.atx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByName.atx" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByName.atx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByUUID.atx" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.CatRelTypesByUUID.atx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.gdbtable" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.gdbtable" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.gdbtablx" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/a00000007.gdbtablx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/timestamps" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.gdb/timestamps" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/asdst.pyt" afterPath="$PROJECT_DIR$/asdst_addin/Install/asdst.pyt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/asdst.pyt.xml" afterPath="$PROJECT_DIR$/asdst_addin/Install/asdst.pyt.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py" afterPath="$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/configure.py" afterPath="$PROJECT_DIR$/asdst_addin/Install/configure.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/context_calculation.py" afterPath="$PROJECT_DIR$/asdst_addin/Install/context_calculation.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/log.py" afterPath="$PROJECT_DIR$/asdst_addin/Install/log.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.py" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/asdst_addin.esriaddin" afterPath="$PROJECT_DIR$/asdst_addin/asdst_addin.esriaddin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/config.xml" afterPath="$PROJECT_DIR$/asdst_addin/config.xml" />
     </list>
@@ -47,7 +29,7 @@
       <file leaf-file-name="config.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/asdst_addin/config.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
+            <state relative-caret-position="1848">
               <caret line="84" column="29" lean-forward="false" selection-start-line="84" selection-start-column="29" selection-end-line="84" selection-end-column="29" />
               <folding />
             </state>
@@ -57,8 +39,8 @@
       <file leaf-file-name="asdst_addin.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="274">
-              <caret line="45" column="0" lean-forward="true" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+            <state relative-caret-position="176">
+              <caret line="44" column="16" lean-forward="true" selection-start-line="44" selection-start-column="16" selection-end-line="44" selection-end-column="16" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -69,8 +51,8 @@
       <file leaf-file-name="project.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/asdst_addin/Install/project.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="105" column="0" lean-forward="true" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
+            <state relative-caret-position="162">
+              <caret line="32" column="39" lean-forward="false" selection-start-line="32" selection-start-column="39" selection-end-line="32" selection-end-column="39" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -82,7 +64,7 @@
         <entry file="file://$PROJECT_DIR$/asdst_addin/Install/utils.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="66">
-              <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+              <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -90,23 +72,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="log.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="log.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/asdst_addin/Install/log.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="44" column="0" lean-forward="true" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
+            <state relative-caret-position="220">
+              <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
               <folding>
-                <element signature="e#40#77#0" expanded="true" />
+                <element signature="e#0#37#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="configure.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="configure.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/asdst_addin/Install/configure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="96">
-              <caret line="105" column="32" lean-forward="false" selection-start-line="105" selection-start-column="32" selection-end-line="105" selection-end-column="32" />
+            <state relative-caret-position="402">
+              <caret line="104" column="0" lean-forward="false" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -139,8 +121,8 @@
       <file leaf-file-name="create_project.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/asdst_addin/Install/create_project.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="6" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="353" selection-end-column="0" />
+            <state relative-caret-position="22">
+              <caret line="6" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="353" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -171,8 +153,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>_arc_object</find>
-      <find>add_message</find>
       <find>enabled</find>
       <find>logging</find>
       <find>__enable_tools</find>
@@ -201,6 +181,8 @@
       <find>configuration</find>
       <find>utils</find>
       <find>layer_dictionary</find>
+      <find>configured</find>
+      <find>??</find>
     </findStrings>
     <replaceStrings>
       <replace>am</replace>
@@ -241,12 +223,12 @@
         <option value="$PROJECT_DIR$/asdst_addin/asdst_test.py" />
         <option value="$PROJECT_DIR$/asdst_addin/Install/asdst.pyt" />
         <option value="$PROJECT_DIR$/asdst_addin/Install/context_calculation.py" />
-        <option value="$PROJECT_DIR$/asdst_addin/Install/log.py" />
         <option value="$PROJECT_DIR$/asdst_addin/config.xml" />
-        <option value="$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py" />
-        <option value="$PROJECT_DIR$/asdst_addin/Install/project.py" />
         <option value="$PROJECT_DIR$/asdst_addin/Install/utils.py" />
         <option value="$PROJECT_DIR$/asdst_addin/Install/configure.py" />
+        <option value="$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py" />
+        <option value="$PROJECT_DIR$/asdst_addin/Install/project.py" />
+        <option value="$PROJECT_DIR$/asdst_addin/Install/log.py" />
       </list>
     </option>
   </component>
@@ -541,7 +523,14 @@
       <option name="project" value="LOCAL" />
       <updated>1483866827184</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="refactor muchly...">
+      <created>1489556709050</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1489556709050</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -551,7 +540,6 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24895833" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32857144" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38333333" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33571428" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -566,6 +554,7 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32857144" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -575,7 +564,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="base code" />
-    <option name="LAST_COMMIT_MESSAGE" value="base code" />
+    <MESSAGE value="refactor muchly..." />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor muchly..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -608,7 +598,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3520">
           <caret line="165" column="62" lean-forward="true" selection-start-line="165" selection-start-column="61" selection-end-line="165" selection-end-column="73" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -687,7 +676,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2231">
           <caret line="138" column="46" lean-forward="true" selection-start-line="138" selection-start-column="46" selection-end-line="138" selection-end-column="46" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -725,7 +713,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="178">
           <caret line="1594" column="4" lean-forward="false" selection-start-line="1594" selection-start-column="4" selection-end-line="1594" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -758,9 +745,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1386">
           <caret line="70" column="8" lean-forward="false" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#39#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -792,19 +776,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/log.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="44" column="0" lean-forward="true" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
-          <folding>
-            <element signature="e#40#77#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/asdst_addin/config.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
+        <state relative-caret-position="1848">
           <caret line="84" column="29" lean-forward="false" selection-start-line="84" selection-start-column="29" selection-end-line="84" selection-end-column="29" />
           <folding />
         </state>
@@ -812,28 +786,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/asdst_addin/Install/create_project.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="6" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="353" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="45" column="0" lean-forward="true" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/project.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="105" column="0" lean-forward="true" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
+        <state relative-caret-position="22">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="353" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -843,19 +797,49 @@
     <entry file="file://$PROJECT_DIR$/asdst_addin/Install/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="66">
-          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/configure.py">
+    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/project.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="105" column="32" lean-forward="false" selection-start-line="105" selection-start-column="32" selection-end-line="105" selection-end-column="32" />
+        <state relative-caret-position="162">
+          <caret line="32" column="39" lean-forward="false" selection-start-line="32" selection-start-column="39" selection-end-line="32" selection-end-column="39" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/configure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="402">
+          <caret line="104" column="0" lean-forward="false" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="44" column="16" lean-forward="true" selection-start-line="44" selection-start-column="16" selection-end-line="44" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/log.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
           </folding>
         </state>
       </provider>

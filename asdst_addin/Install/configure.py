@@ -102,8 +102,6 @@ class Configuration(object):
 
         x = [c for a, b, c in result[:-1]]  # Ahims is optional
         self.valid = not (False in x)
-        # print not (False in x)
-        print("validate= {}".format(result))
         log.debug("validate= {}".format(result))
 
         return result

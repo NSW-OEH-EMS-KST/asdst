@@ -101,7 +101,8 @@ class Project(object):
         #       utils.exists_tuple("Template MXD", self.template_mxd),
         #       utils.exists_tuple("AHIMS Sites", self.ahims_sites)]
 
-        self.valid = not (False in result)
+        x = [c for a, b, c in result]
+        self.valid = not (False in x)
         return result
 
     @log.log
@@ -111,11 +112,11 @@ class Project(object):
         fmt = u"{} {}"
 
         s = self.validate()
-        x = [[unicode(item), [false, true][value]] for desc, item, value in s]
-        y = [fmt.format(item, value) for item, value in x]
-        y.append("THE PROJECT IS " + ["INVALID", "VALID"][self.valid])
+        s = [[unicode(item), [false, true][value]] for desc, item, value in s]
+        s = [fmt.format(item, value) for item, value in s]
+        s.append("THE PROJECT IS " + ["INVALID", "VALID"][self.valid])
 
-        return "\n".join(y)
+        return "\n".join(s)
 
 
 def get_project(configuration, add_layers, add_table, compact_fgdb):

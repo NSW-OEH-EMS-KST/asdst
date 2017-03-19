@@ -1,4 +1,3 @@
-# from __future__ import with_statement
 from __future__ import print_function
 from contextlib import contextmanager
 from functools import wraps
@@ -28,7 +27,7 @@ def configure_logging(log_file, level, addin_message):
     _LEVEL = level
     _ADDIN_MESSAGE = addin_message
 
-    _ADDIN_MESSAGE(log_file)
+    # _ADDIN_MESSAGE(log_file)
     try:
         if not os.path.exists(log_file):
             _ADDIN_MESSAGE("creating log")
@@ -43,7 +42,7 @@ def configure_logging(log_file, level, addin_message):
         logging.getLogger().addHandler(ah)
         logging.debug("ArcLogHandler added")
 
-        _ADDIN_MESSAGE("Logging configured??")
+        # _ADDIN_MESSAGE("Logging configured??")
     except Exception as e:
         print(e)
 

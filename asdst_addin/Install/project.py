@@ -124,7 +124,6 @@ def get_project(configuration, add_layers, add_table, compact_fgdb):
 
 
 class CreateProjectTool(object):
-    """C:\Data\asdst\asdst_addin\Install\ASDST.tbx\CreateProject"""
 
     class ToolValidator(object):
         """Class for validating a tool's parameter values and controlling
@@ -288,8 +287,7 @@ class CreateProjectTool(object):
         try:
             # might be a feature set
             self.geometry.save(self.area)
-            msg = msg.format(self.area, "Feature set created by user",
-                             "Temporary")
+            msg = msg.format(self.area, "Feature set created by user", "Temporary")
             add_message(msg)
         except:
             try:
@@ -407,31 +405,31 @@ class CreateProjectTool(object):
         del ic
 
         # Compact the FGDB workspace
-        add_message(asdst_addin.self.compact_fgdb(self.gdb))
+        add_message(self.compact_fgdb(self.gdb))
 
         # Add data to map
         add_message("Adding data layers to map...")
 
-        asdst_addin.self.add_table(self.mxd, self.loss)
+        self.add_table(self.mxd, self.loss)
 
         lyrs = {"Model Reliability": self.layer_dict2["reliability"]}
-        asdst_addin.self.add_layers(self.mxd, lyrs, "Derived", "relia")
+        self.add_layers(self.mxd, lyrs, "Derived", "relia")
 
         lyrs = {"Survey Priority": self.layer_dict2["priority"]}
-        asdst_addin.self.add_layers(self.mxd, lyrs, "Derived", "prior")
+        self.add_layers(self.mxd, lyrs, "Derived", "prior")
 
         lyrs = {"Accumulated Impact": self.layer_dict2["impact"]}
-        asdst_addin.self.add_layers(self.mxd, lyrs, "Derived", "accim")
+        self.add_layers(self.mxd, lyrs, "Derived", "accim")
 
         lyrs = {"Regionalisation Level {0}".format(i): self.layer_dict2["aslu_lvl{0}".format(i)] for i in
                 range(1, 5)}
-        asdst_addin.self.add_layers(self.mxd, lyrs, "Regionalisation", "regio")
+        self.add_layers(self.mxd, lyrs, "Regionalisation", "regio")
 
         lyrs = {v["name"]: v["1750_local"] for k, v in self.layer_dict.iteritems()}
-        asdst_addin.self.add_layers(self.mxd, lyrs, "Pre-1750", "model")
+        self.add_layers(self.mxd, lyrs, "Pre-1750", "model")
 
         lyrs = {v["name"]: v["curr_local"] for k, v in self.layer_dict.iteritems()}
-        asdst_addin.self.add_layers(self.mxd, lyrs, "Current", "model")
+        self.add_layers(self.mxd, lyrs, "Current", "model")
 
         # Save and report status
         self.mxd.save()

@@ -4,11 +4,35 @@ import log
 import json
 import utils
 
+ASDST_CODES = {'AFT': "Stone artefact",
+               'ART': "Rock art",
+               'BUR': "Burial",
+               'ETM': "Earth mound",
+               'GDG': "Grinding groove",
+               'HTH': "Hearth or camp fire feature",
+               'SHL': "Shell midden",
+               'STQ': "Stone quarry",
+               'TRE': "Scarred tree"}
+
+ASDST_CODES_EX = {'ACD': "Aboriginal ceremony and dreaming",
+                  'ARG': "Aboriginal resource gathering",
+                  'AFT': "Stone artefact", 'ART': "Rock art",
+                  'BUR': "Burial", 'CFT': "Conflict site",
+                  'CMR': "Ceremonial ring", 'ETM': "Earth mound",
+                  'FSH': "Fish trap", 'GDG': "Grinding groove",
+                  'HAB': "Habitation structure",
+                  'HTH': "Hearth or camp fire feature",
+                  'OCQ': "Ochre quarry",
+                  'PAD': "Potential archaeological deposit",
+                  'SHL': "Shell midden", 'STA': "Stone arrangement",
+                  'STQ': "Stone quarry", 'TRE': "Scarred tree",
+                  'WTR': "Water feature"}
+
 
 class Configuration(object):
     @log.log
-    def __init__(self, codes):
-        self.codes = codes
+    def __init__(self):
+        self.codes = ASDST_CODES
 
         # status stuff
         self.errors = []
@@ -38,7 +62,7 @@ class Configuration(object):
         except Exception as e:
             self.errors.append("Could not create {}".format(self.log_file))
 
-        self.toolbox = os.path.join(self.script_path, "ASDST.pyt")
+        self.toolbox = os.path.join(self.script_path, "asdst.pyt")
 
         # template fgdbs
         self.template_project_gdb = os.path.join(self.script_path, "project.gdb")
@@ -191,12 +215,13 @@ class Configuration(object):
 
         return d
 
+
 CONFIG = None
 
 
-def get_configuration(codes):
+def get_configuration():
     global CONFIG
-    CONFIG = Configuration(codes)
+    CONFIG = Configuration()
     return CONFIG
 
 
@@ -230,7 +255,6 @@ class ConfigureTool(object):
         def updateMessages(self):
             """Modify the messages created by internal validation for each tool
             parameter.  This method is called after internal validation."""
-            # import asdst_addin
             if self.params[2].value:
                 fields = ap.ListFields(self.params[2].value)
                 fieldnames = {f.name for f in fields}
@@ -248,7 +272,6 @@ class ConfigureTool(object):
         self.canRunInBackground = False
 
     def getParameterInfo(self):
-        # pass
         # Source_Database
         param_1 = ap.Parameter()
         param_1.name = u'Source_Database'
@@ -302,8 +325,8 @@ class ConfigureTool(object):
     def execute(self, parameters, messages):
         if parameters and messages:
             CONFIG.set_user_config(parameters[0].valueAsText,
-                                          parameters[1].valueAsText,
-                                          parameters[2].valueAsText)
+                                   parameters[1].valueAsText,
+                                   parameters[2].valueAsText)
 
         return
 

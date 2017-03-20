@@ -9,39 +9,16 @@ import log
 import configure
 import project
 
+
 @log.log
 def addin_message(msg, mb=0):
     return pa.MessageBox(msg, "ASDST Extension", mb)
-
-ASDST_CODES = {'AFT': "Stone artefact",
-               'ART': "Rock art",
-               'BUR': "Burial",
-               'ETM': "Earth mound",
-               'GDG': "Grinding groove",
-               'HTH': "Hearth or camp fire feature",
-               'SHL': "Shell midden",
-               'STQ': "Stone quarry",
-               'TRE': "Scarred tree"}
-
-ASDST_CODES_EX = {'ACD': "Aboriginal ceremony and dreaming",
-                  'ARG': "Aboriginal resource gathering",
-                  'AFT': "Stone artefact", 'ART': "Rock art",
-                  'BUR': "Burial", 'CFT': "Conflict site",
-                  'CMR': "Ceremonial ring", 'ETM': "Earth mound",
-                  'FSH': "Fish trap", 'GDG': "Grinding groove",
-                  'HAB': "Habitation structure",
-                  'HTH': "Hearth or camp fire feature",
-                  'OCQ': "Ochre quarry",
-                  'PAD': "Potential archaeological deposit",
-                  'SHL': "Shell midden", 'STA': "Stone arrangement",
-                  'STQ': "Stone quarry", 'TRE': "Scarred tree",
-                  'WTR': "Water feature"}
 
 
 PROTECTED = ["Areas of Interest", "Context", "Pre-1750", "Current", "ASDST"]
 
 
-configuration = configure.get_configuration(ASDST_CODES)
+configuration = configure.get_configuration()
 log.configure_logging(configuration.log_file, log.DEBUG, addin_message)
 
 
@@ -50,10 +27,7 @@ class InfoButton(object):
 
     @log.log
     def onClick(self):
-        # addin_message("onClick")
-        # log.info("click!")
         msg = get_asdst_status()
-        # log.info(msg)
         addin_message(msg)
         return
 
@@ -82,14 +56,9 @@ class CreateProjectButton(object):
 
     @log.log
     def onClick(self):
-        # logging.debug("CreateProjectButton.onClick")
-        # try:  # launch the new project tool
-        # pa.GPToolDialog(ASDST_EXTENSION.config.toolbox, "CreateProjectTool")
-        # except Exception as e:
-        #     # logging.error(e)
-        #     pass
 
-        # logging.debug("CreateProjectButton.onClick END")
+        pa.GPToolDialog(configuration.toolbox, "CreateProjectTool")
+
         return
 
 
@@ -98,13 +67,8 @@ class ConfigureButton(object):
 
     @log.log
     def onClick(self):
-        addin_message("onClick")
-        # try:  # launch the configuration tool
-        # pa.GPToolDialog(ASDST_EXTENSION.config.toolbox, "ConfigureTool")
-        # ASDST_EXTENSION.project.validate()
-        # except Exception as e:
-        #     # logging.error(e)
-        #     pass
+        pa.GPToolDialog(configuration.toolbox, "ConfigureTool")
+
         return
 
 

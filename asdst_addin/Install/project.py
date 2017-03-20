@@ -3,9 +3,6 @@ from arcpy import env as env
 import arcpy.mapping as am
 import os
 import log
-# from configure import self.configuration, utils.exists_tuple
-# import asdst_addin
-# from asdst_addin import self.add_layers, self.add_table, self.compact_fgdb
 import ast
 import utils
 
@@ -18,7 +15,7 @@ class Project(object):
         self.compact_fgdb = compact_fgdb
         self.title = None
         self.gdb = None
-        self.mxd = None
+        self.mxd = am.MapDocument("CURRENT")
         self.df = None
         self.valid = None
         # self.missing_layers = True
@@ -75,31 +72,18 @@ class Project(object):
         #         r.append(utils.exists_tuple(v["curr_local"]))
         #
         #     return f.format(*r)
-        #
-        # return
+        self.validate()
+
+        return
 
     @log.log
     def validate(self):
-        self.refresh()
+        # self.refresh()
 
         result = []
         for k, v in self.configuration.layer_dictionary(self.gdb or "NONE").iteritems():
             result.append(utils.exists_tuple("", v["1750_local"]))
             result.append(utils.exists_tuple("", v["curr_local"]))
-        # result = [utils.exists_tuple("Python Toolbox", self.toolbox),
-        #       utils.exists_tuple("Log File", self.log_file),
-        #       utils.exists_tuple("Template Project FGDB", self.template_project_gdb),
-        #       utils.exists_tuple("Template Context FGDB", self.template_context_gdb),
-        #       utils.exists_tuple("Template GROUP Layer", self.empty_group_layer),
-        #       utils.exists_tuple("Template MODEL Layer", self.empty_model_layer),
-        #       utils.exists_tuple("Template RELIA Layer", self.empty_relia_layer),
-        #       utils.exists_tuple("Template ACCIM Layer", self.empty_accim_layer),
-        #       utils.exists_tuple("Template REGIO Layer", self.empty_regio_layer),
-        #       utils.exists_tuple("Template PRIOR Layer", self.empty_prior_layer),
-        #       utils.exists_tuple("self.configuration File", self.config_file),
-        #       utils.exists_tuple("Source FGDB", self.source_fgdb),
-        #       utils.exists_tuple("Template MXD", self.template_mxd),
-        #       utils.exists_tuple("AHIMS Sites", self.ahims_sites)]
 
         x = [c for a, b, c in result]
         self.valid = not (False in x)
@@ -150,6 +134,7 @@ class CreateProjectTool(object):
             return
 
     def __init__(self):
+        self.enabled = False
         self.label = u'Create Project'
         self.description = "Create a new ASDST Project"
         self.canRunInBackground = True
@@ -168,7 +153,6 @@ class CreateProjectTool(object):
         self.layer_dict2 = {}
 
     def getParameterInfo(self):
-        pass
         # Name
         param_1 = ap.Parameter()
         param_1.name = u'Name'
@@ -438,33 +422,10 @@ class CreateProjectTool(object):
         # Launch new MXD
         os.system(self.mxd_file)
 
-# def main():
-#     """ Main entry
-#
-#     Args:
-#
-#     Returns:
-#
-#     Raises:
-#       No raising or catching
-#
-#     """
-#     np = NewProject().get_inputs()
-#     np.make_fs()
-#     np.fix_mxd()
-#     np.import_project_area()
-#     np.build_data()
-#     add_message(asdst.self.compact_fgdb(np.gdb))
-#     np.add_layers_to_map()
-#     np.mxd.save()
-#     os.system(np.mxd_file)
-#     add_message(np.success)
-#
-#
-# if __name__ == '__main__':
-#     main()
 
 
+def main():
+    pass
 
-
-
+if __name__ == '__main__':
+    main()

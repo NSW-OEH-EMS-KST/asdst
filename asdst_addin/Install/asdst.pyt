@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from configure import ConfigureTool
+from project import CreateProjectTool
 # from context_calculation import ContextCalculationTool
-# from create_project import CreateProjectTool
 
 
 class Toolbox(object):
@@ -10,7 +10,7 @@ class Toolbox(object):
         self.label = u'Aboriginal Site Decision Support Tools'
         self.alias = u'ASDST'
         # self.tools = [ConfigureTool, CreateProjectTool, ContextCalculationTool]
-        self.tools = [ConfigureTool]  #, CreateProjectTool, ContextCalculationTool]
+        self.tools = [ConfigureTool, CreateProjectTool]  #, ContextCalculationTool]
 
 
 def main():

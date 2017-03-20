@@ -32,7 +32,6 @@ ASDST_CODES_EX = {'ACD': "Aboriginal ceremony and dreaming",
 class Configuration(object):
     @log.log
     def __init__(self):
-        self.codes = ASDST_CODES
 
         # status stuff
         self.errors = []
@@ -195,9 +194,9 @@ class Configuration(object):
             print("local_workspace not set")
             return {}
 
-        if not self.codes:
-            print("codes not set")
-            return {}
+        # if not self.codes:
+        #     print("codes not set")
+        #     return {}
 
         if not self.source_fgdb:
             print("self.source_fgdb not set")
@@ -211,7 +210,7 @@ class Configuration(object):
                  "1750_source": (os.path.join(source_ws, k.lower() + sfx_1750)),
                  "1750_local": (os.path.join(local_workspace, k.lower() + "_1750")),
                  "curr_local": (os.path.join(local_workspace, k.lower() + sfx_curr))}
-             for k, v in self.codes.iteritems()}
+             for k, v in ASDST_CODES.iteritems()}
 
         return d
 
@@ -237,8 +236,9 @@ class ConfigureTool(object):
         def initializeParameters(self):
             """Refine the properties of a tool's parameters.  This method is
             called when the tool is opened."""
+            if not CONFIG:
+                return
 
-            # cfg = configuration.get_user_config()
             self.params[0].value = CONFIG.source_fgdb  # cfg[0]
             self.params[1].value = CONFIG.template_mxd  # cfg[1]
             self.params[2].value = CONFIG.ahims_sites  # cfg[2]
@@ -258,7 +258,7 @@ class ConfigureTool(object):
             if self.params[2].value:
                 fields = ap.ListFields(self.params[2].value)
                 fieldnames = {f.name for f in fields}
-                codes = {k for k, v in self.codes.iteritems()}
+                codes = {k for k, v in ASDST_CODES.iteritems()}
                 missing = codes - fieldnames
                 if missing:
                     self.params[2].setErrorMessage(
@@ -272,6 +272,9 @@ class ConfigureTool(object):
         self.canRunInBackground = False
 
     def getParameterInfo(self):
+        if not CONFIG:
+            return
+
         # Source_Database
         param_1 = ap.Parameter()
         param_1.name = u'Source_Database'
@@ -323,31 +326,19 @@ class ConfigureTool(object):
         return
 
     def execute(self, parameters, messages):
-        if parameters and messages:
-            CONFIG.set_user_config(parameters[0].valueAsText,
-                                   parameters[1].valueAsText,
-                                   parameters[2].valueAsText)
+        if not CONFIG:
+            return
+
+        CONFIG.set_user_config(parameters[0].valueAsText,
+                               parameters[1].valueAsText,
+                               parameters[2].valueAsText)
 
         return
 
 
+
 def main():
-    """ Main entry
-
-        Args:
-
-        Returns:
-
-        Raises:
-
-        """
-    # set_user_config(parameters[0].valueAsText,
-    #                              parameters[1].valueAsText,
-    #                              parameters[2].valueAsText)
     pass
-
-
-# validate()
 
 if __name__ == '__main__':
     main()

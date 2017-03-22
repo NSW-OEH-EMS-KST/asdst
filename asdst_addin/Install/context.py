@@ -1,7 +1,9 @@
 import arcpy as ap
 from os.path import split, join
+import log
 import configure
-from asdst_addin import ASDST_EXTENSION  #, LOG
+import asdst_addin
+# from asdst_addin import configuration, compact_fgdb, add_layers, add_table
 
 
 class ContextCalculationTool(object):
@@ -30,33 +32,37 @@ class ContextCalculationTool(object):
             parameter.  This method is called after internal validation."""
             return
 
+    @log.log
     def __init__(self):
-        self.label = u'Context Calculation'
-        self.description = u'This tool performs a context calculation.\r\n\r\n Three layers are required: \r\n1. Context\r\n2. Assessment\r\n3. Conservation'
-        self.canRunInBackground = False
-        self.raw_title = ""
-        self.description = ""
-        self.parent_dir = ""
-        self.geom_context = None
-        self.geom_assessment = None
-        self.geom_conservation = None
-        self.sane_title = ""
-        self.gdb_path = ""
-        self.gdb_name = ""
-        self.gdb = ""
-        self.context = ""
-        # self.table_full = ""
-        self.table_summ = ""
-        self.table_ahims = ""
-        self.assessment = ""
-        self.conservation = ""
-        self.areas = {}
-        self.success = ""
-        self.layer_dict = {}
+        # self.label = u'Context Calculation'
+        # self.description = u'This tool performs a context calculation.\r\n\r\n Three layers are required: \r\n1. Context\r\n2. Assessment\r\n3. Conservation'
+        # self.canRunInBackground = False
+        # self.raw_title = ""
+        # self.description = ""
+        # self.parent_dir = ""
+        # self.geom_context = None
+        # self.geom_assessment = None
+        # self.geom_conservation = None
+        # self.sane_title = ""
+        # self.gdb_path = ""
+        # self.gdb_name = ""
+        # self.gdb = ""
+        # self.context = ""
+        # # self.table_full = ""
+        # self.table_summ = ""
+        # self.table_ahims = ""
+        # self.assessment = ""
+        # self.conservation = ""
+        # self.areas = {}
+        # self.success = ""
+        # self.layer_dict = {}
         # pass
 
+        return
+
+    @log.log
     def getParameterInfo(self):
-        # pass
+
         # Name
         param_1 = ap.Parameter()
         param_1.name = u'Name'
@@ -115,51 +121,52 @@ class ContextCalculationTool(object):
         if validator:
             return validator(parameters).updateMessages()
 
+    @log.log
     def execute(self, parameters, messages):
-        # pass
         # Aliases
-        # add_message = messages.addMessage
-        # add_error = messages.addErrorMessage
+        add_message = messages.addMessage
+        add_error = messages.addErrorMessage
 
         # Get user inputs
-        self.raw_title = parameters[0].valueAsText  # title
-        self.description = parameters[1].valueAsText  # description
-        self.geom_context = parameters[2]  # geom (feature set)
-        self.geom_assessment = parameters[3]  # geom (feature set)
-        self.geom_conservation = parameters[4]  # geom (feature set)
-        self.sane_title = self.raw_title.lower().replace(" ", "_")
-        mxd_path = ap.mapping.MapDocument("current").filePath
-        self.gdb_path = split(mxd_path)[0]
-        self.gdb_name = "context_{0}".format(self.sane_title) + ".gdb"
-        self.gdb = join(self.gdb_path, self.gdb_name)
-        # self.table_full = join(self.gdb, "loss_full")
-        self.table_summ = join(self.gdb, "loss_summary")
-        self.table_ahims = join(self.gdb, "ahims_summary")
-        self.context = join(self.gdb, "context_{0}".format(self.sane_title))
-        self.assessment = join(self.gdb, "assessment_{0}".format(self.sane_title))
-        self.conservation = join(self.gdb, "conservation_{0}".format(self.sane_title))
-        self.areas["Context"] = [self.context, self.geom_context]
-        self.areas["Assessment"] = [self.assessment, self.geom_assessment]
-        self.areas["Conservation"] = [self.conservation, self.geom_conservation]
-        self.success = "Context calculation {0} successful ({1})"
-        self.success = self.success.format(self.raw_title, self.gdb)
+        raw_title = parameters[0].valueAsText  # title
+        description = parameters[1].valueAsText  # description
+        geom_context = parameters[2]  # geom (feature set)
+        geom_assessment = parameters[3]  # geom (feature set)
+        geom_conservation = parameters[4]  # geom (feature set)
+        sane_title = raw_title.lower().replace(" ", "_")
+        mxd = ap.mapping.MapDocument("CURRENT")
+        mxd_path = mxd.filePath
+        gdb_path = split(mxd_path)[0]
+        gdb_name = "context_{0}".format(sane_title) + ".gdb"
+        gdb = join(gdb_path, gdb_name)
+
+        table_summ = join(gdb, "loss_summary")
+        table_ahims = join(gdb, "ahims_summary")
+        context = join(gdb, "context_{0}".format(sane_title))
+        assessment = join(gdb, "assessment_{0}".format(sane_title))
+        conservation = join(gdb, "conservation_{0}".format(sane_title))
+
+        areas = {"Context": [context, geom_context],
+                 "Assessment": [assessment, geom_assessment],
+                 "Conservation": [conservation, geom_conservation]}
+        # success = "Context calculation {0} successful ({1})".format(raw_title, gdb)
 
         # nc.check_areas() TODO ?
 
         # Make the required file system
         ok_msg = "Geodatabase {0} created"
         err_msg = "Error creating {0}: {1}"
-        try:
-            ap.Copy_management(ASDST_EXTENSION.config.template_context_gdb, self.gdb)
-            ap.Copy_management(configure.template_context_gdb, self.gdb)
-            add_message(ok_msg.format(self.gdb))
-        except Exception as e:
-            add_error(err_msg.format(self.gdb, e.message))
-            raise ap.ExecuteError
+        # try:
+            # ap.Copy_management(ASDST_EXTENSION.config.template_context_gdb, gdb)
+        ap.Copy_management(configuration.template_context_gdb, gdb)
+        add_message(ok_msg.format(gdb))
+        # except Exception as e:
+        #     add_error(err_msg.format(gdb, e.message))
+        #     raise ap.ExecuteError
 
         # Import calculation areas into project workspace i.e. save the geometry to be used
         m = "{0} area imported: {1} ({2} - {3})"
-        for k, v in self.areas.iteritems():
+        for k, v in areas.iteritems():
             try:
                 # might be a feature set
                 v[1].save(v[0])
@@ -178,29 +185,29 @@ class ContextCalculationTool(object):
 
         # Build loss data
         add_message("Getting layer dictionary...")
-        self.layer_dict = ASDST_EXTENSION.project.layer_dictionary()
+        layer_dict = configuration.layer_dictionary()
 
         # Calc stats
         add_message("Calculating statistics...")
         n = 0
         res_tot = []
-        for k, v in self.layer_dict.iteritems():
+        for k, v in layer_dict.iteritems():
             n += 1
             res = [n]
             res2 = [n]
-            res.extend([k, ASDST_EXTENSION.codes[k]])  # model_code, model_desc
-            res2.extend([k, ASDST_EXTENSION.codes[k]])  # model_code, model_desc
+            res.extend([k, configuration.codes[k]])  # model_code, model_desc
+            res2.extend([k, configuration.codes[k]])  # model_code, model_desc
             lyr = v["name"]
             add_message("...{0}".format(lyr))
             lyr = v["1750_local"]
             # context
-            tmp_ras = join(self.gdb, "context_{0}_1750".format(k))
-            ap.Clip_management(lyr, "#", tmp_ras, self.context, "#", "ClippingGeometry")
+            tmp_ras = join(gdb, "context_{0}_1750".format(k))
+            ap.Clip_management(lyr, "#", tmp_ras, context, "#", "ClippingGeometry")
             sumcont1750 = ap.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
             res.append(sumcont1750)  # context_sum_1750
             lyr = v["curr_local"]
-            tmp_ras = join(self.gdb, "context_{0}_curr".format(k))
-            ap.Clip_management(lyr, "#", tmp_ras, self.context, "#", "ClippingGeometry")
+            tmp_ras = join(gdb, "context_{0}_curr".format(k))
+            ap.Clip_management(lyr, "#", tmp_ras, context, "#", "ClippingGeometry")
             sumcontcurr = ap.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
             res.append(sumcontcurr)  # context_sum_current
             sumchange = (sumcontcurr - sumcont1750)
@@ -214,8 +221,8 @@ class ContextCalculationTool(object):
             res.append(loss)  # context_loss
 
             # assessment
-            tmp_ras = join(self.gdb, "assessment_{0}_curr".format(k))
-            ap.Clip_management(lyr, "#", tmp_ras, self.assessment, "#", "ClippingGeometry")
+            tmp_ras = join(gdb, "assessment_{0}_curr".format(k))
+            ap.Clip_management(lyr, "#", tmp_ras, assessment, "#", "ClippingGeometry")
             sumass = ap.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
             res.append(sumass)  # assessment_sum
             if sumcontcurr == 0:
@@ -225,8 +232,8 @@ class ContextCalculationTool(object):
             res.append(pcass)  # assessment_pc
 
             # conservation
-            tmp_ras = join(self.gdb, "conservation_{0}_curr".format(k))
-            ap.Clip_management(lyr, "#", tmp_ras, self.conservation, "#", "ClippingGeometry")
+            tmp_ras = join(gdb, "conservation_{0}_curr".format(k))
+            ap.Clip_management(lyr, "#", tmp_ras, conservation, "#", "ClippingGeometry")
             sumcons = ap.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
             res.append(sumcons)  # conservation_sum
             if sumcontcurr == 0:
@@ -237,43 +244,43 @@ class ContextCalculationTool(object):
 
             res_tot.append(res)
 
-        ic = ap.da.InsertCursor(self.table_summ, "*")
+        ic = ap.da.InsertCursor(table_summ, "*")
         for r in res_tot:
             ic.insertRow(r)
         del ic
 
         # Build AHIMS data if configured
-        if ASDST_EXTENSION.config.ahims_sites:
+        if configuration.ahims_sites:
             add_message("Analysing AHIMS points...")
             res_tot = []
             n = 0
-            for k, v in ASDST_EXTENSION.codes_ex.iteritems():
+            for k, v in configuration.codes_ex.iteritems():
                 add_message("...{0}".format(v))
                 n += 1
                 res = [n]
-                res.extend([k, ASDST_EXTENSION.codes_ex[k]])  # model_code, model_desc
+                res.extend([k, configuration.codes_ex[k]])  # model_code, model_desc
 
-                tmp_fc = join(self.gdb, "ahims_{0}_context".format(k))
-                if ASDST_EXTENSION.config.ahims_sites:
-                    ap.Intersect_analysis([ASDST_EXTENSION.config.ahims_sites, self.context], tmp_fc)
+                tmp_fc = join(gdb, "ahims_{0}_context".format(k))
+                if configuration.ahims_sites:
+                    ap.Intersect_analysis([configuration.ahims_sites, context], tmp_fc)
                     sc = ap.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
                     l = [r for r in sc]
                     res.append(len(l))  # context_pts
                 else:
                     res.append(None)
 
-                tmp_fc = join(self.gdb, "ahims_{0}_assessment".format(k))
-                if ASDST_EXTENSION.config.ahims_sites:
-                    ap.Intersect_analysis([ASDST_EXTENSION.config.ahims_sites, self.assessment], tmp_fc)
+                tmp_fc = join(gdb, "ahims_{0}_assessment".format(k))
+                if configuration.ahims_sites:
+                    ap.Intersect_analysis([configuration.ahims_sites, assessment], tmp_fc)
                     sc = ap.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
                     l = [r for r in sc]
                     res.append(len(l))  # context_pts
                 else:
                     res.append(None)
 
-                tmp_fc = join(self.gdb, "ahims_{0}_conservation".format(k))
-                if ASDST_EXTENSION.config.ahims_sites:
-                    ap.Intersect_analysis([ASDST_EXTENSION.config.ahims_sites, self.conservation], tmp_fc)
+                tmp_fc = join(gdb, "ahims_{0}_conservation".format(k))
+                if configuration.ahims_sites:
+                    ap.Intersect_analysis([configuration.ahims_sites, conservation], tmp_fc)
                     sc = ap.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
                     l = [r for r in sc]
                     res.append(len(l))  # conservation_pts
@@ -283,27 +290,34 @@ class ContextCalculationTool(object):
 
                 res_tot.append(res)
 
-            ic = ap.da.InsertCursor(self.table_ahims, "*")
+            ic = ap.da.InsertCursor(table_ahims, "*")
             for r in res_tot:
                 ic.insertRow(r)
             del ic
 
         # Compact the FGDB workspace
-        add_message(ASDST_EXTENSION.compact_fgdb(self.gdb))  # note the side effect
+        add_message(compact_fgdb(gdb))  # note the side effect
 
         # Add data to map
         add_message("Adding feature layers to map...")
-        lyrs = {k: v[0] for k, v in self.areas.iteritems()}
-        ASDST_EXTENSION.project.add_layers(lyrs, "Context {}".format(self.sane_title), "calc")
+        lyrs = {k: v[0] for k, v in areas.iteritems()}
+        add_layers(lyrs, "Context {}".format(sane_title), "calc")
         add_message("Adding result tables to map...")
-        ASDST_EXTENSION.add_table(ASDST_EXTENSION.project.mxd, self.table_summ, "context_loss")
-        ASDST_EXTENSION.add_table(ASDST_EXTENSION.project.mxd, self.table_ahims, "context_ahims")
+        add_table(mxd, table_summ, "context_loss")
+        add_table(mxd, table_ahims, "context_ahims")
 
         # Save and report status
-        ASDST_EXTENSION.project.mxd.save()
-        add_message(self.success)
+        mxd.save()
+        add_message("Context calculation {0} successful ({1})".format(raw_title, gdb))
 
-    # class NewCalculation:
+
+def main():
+    return
+
+if __name__ == '__main__':
+    main()
+
+            # class NewCalculation:
     #
     #     def __init__(self):
     #         self.raw_title = ""

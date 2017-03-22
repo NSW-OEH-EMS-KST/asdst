@@ -11,7 +11,7 @@
     </Author>
     <Company>NSW OEH
     </Company>
-    <Date>2017-03-20 16:19
+    <Date>2017-03-22 15:11
     </Date>
     <Targets>
         <Target name="Desktop" version="10.1" />
@@ -24,7 +24,7 @@
                         class="CreateProjectButton"
                         id="asdst_addin.cmd_create_project"
                         image="Images/AddInDesktop16.png"
-                        message="Create an empty ASDST project:the first step in an ASDST analysis workflow"
+                        message="Create an empty ASDST project: the first step in an ASDST analysis workflow. At least one layer must be present in the map to enable this tool."
                         tip="Create Project">
                     <Help heading="ASDST help ?">ASDST help to do
                     </Help>
@@ -39,17 +39,28 @@
                     <!--<Help heading="ASDST help ?">ASDST help to do-->
                     <!--</Help>-->
                 <!--</Button>-->
-                <!--<Button caption="Context Calculation"-->
-                        <!--category="ASDST"-->
-                        <!--class="CalculateContextButton"-->
-                        <!--id="asdst_addin.cmd_calculate_context"-->
-                        <!--image="Images/LocationGetPolygon16.png"-->
-                        <!--message="Make a context calculation"-->
-                        <!--tip="Make a context calculation">-->
-                    <!--<Help-->
-                        <!--heading="ASDST help ?">ASDST help to do-->
-                    <!--</Help>-->
-                <!--</Button>-->
+                <Button caption="Build Data"
+                        category="ASDST"
+                        class="BuildDataButton"
+                        id="asdst_addin.cmd_build_data"
+                        image="Images/GeoprocessingPackage16.png"
+                        message="Build project data"
+                        tip="Build Current, Pre-1750 and Loss Data">
+                    <Help
+                        heading="ASDST help ?">ASDST help to do
+                    </Help>
+                </Button>
+                <Button caption="Context Calculation"
+                        category="ASDST"
+                        class="CalculateContextButton"
+                        id="asdst_addin.cmd_calculate_context"
+                        image="Images/LocationGetPolygon16.png"
+                        message="Make a context calculation"
+                        tip="Make a context calculation">
+                    <Help
+                        heading="ASDST help ?">ASDST help to do
+                    </Help>
+                </Button>
                 <Button caption="Configure"
                         category="ASDST"
                         class="ConfigureButton"
@@ -83,6 +94,7 @@
                         <Button refID="asdst_addin.cmd_info" />
                         <Button refID="asdst_addin.cmd_configure" />
                         <Button refID="asdst_addin.cmd_create_project" />
+                        <Button refID="asdst_addin.cmd_build_data" />
                         <!--<Button refID="asdst_addin.cmd_calculate_context" />-->
                         <!--<Button refID="asdst_addin.cmd_stream_order" />-->
                     </Items>

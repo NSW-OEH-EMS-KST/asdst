@@ -7,53 +7,51 @@ import inspect
 
 logger = None
 
-# DEBUG = logging.DEBUG
-# INFO = logging.INFO
-# debug = None
-# info = None
-# error = None
-# warn = None
 
 def debug(msg):
     if logger:
         logger.debug(msg)
+    else:
+        print("DEBUG: " + msg)
 
 
 def info(msg):
     if logger:
         logger.info(msg)
+    else:
+        print("INFO: " + msg)
 
 
 def warn(msg):
     if logger:
         logger.warn(msg)
+    else:
+        print("WARNING: " + msg)
 
 
 def error(msg):
     if logger:
         logger.error(msg)
+    else:
+        print("ERROR: " + msg)
 
 
-# _LEVEL = None
 _ADDIN_MESSAGE = print
-_CONFIGURED = False
 
 
-class ArcLogHandler(logging.StreamHandler):
+class ArcStreamHandler(logging.StreamHandler):
     def emit(self, record):
         msg = self.format(record)
+        # TODO borrow from GG3...
         _ADDIN_MESSAGE(msg)
 
 
 def configure_logging(log_file, addin_message):
-    # print("configure_logging {}".format(locals()))
 
     global _ADDIN_MESSAGE
     _ADDIN_MESSAGE = addin_message
 
-    # try:
     if not os.path.exists(log_file):
-        # print("creating log")
         open(log_file, 'a').close()
 
     global logger
@@ -68,36 +66,42 @@ def configure_logging(log_file, addin_message):
     logger.addHandler(file_handler)
     logger.debug("FileHandler added")
 
-    ah = ArcLogHandler()
+    ah = ArcStreamHandler()
     ah.setLevel(logging.INFO)
     logger.addHandler(ah)
     logger.debug("ArcLogHandler added")
 
     logger.debug("Logging configured")
-    print("Logging configured")
+    # print("Logging configured")
 
     return
 
 
 @contextmanager
-def error_trapping(identifier=None):
+def error_trap(identifier=None):
     """ A context manager that traps and logs exception in its block.
         Usage:
         with error_trapping('optional description'):
             might_raise_exception()
         this_will_always_be_called()
     """
+    identifier = identifier or inspect.getframeinfo(inspect.currentframe())[2]
+    _in = "IN  " + identifier
+    _out = "OUT " + identifier
+
     if not logger:
-        print("Logging is not configured")
-        yield
+        say = print
+        err = print
     else:
-        identifier = identifier or inspect.getframeinfo(inspect.currentframe())[2]
-        try:
-            logger.debug(identifier + " IN")
-            yield
-            logger.debug(identifier + " OUT")
-        except Exception as e:
-            logger.error(e, exc_info=True)
+        say = logger.debug
+        err = logger.error
+
+    try:
+        say(_in)
+        yield
+        say(_out)
+    except Exception as e:
+        err(str(e))
 
     return
 
@@ -106,7 +110,7 @@ def log(f):
     """ A decorator to trap and log exceptions """
     @wraps(f)
     def wrapper(*args, **kwargs):
-        with error_trapping(f.__name__):
+        with error_trap(f.__name__):
                 return f(*args, **kwargs)
 
     return wrapper

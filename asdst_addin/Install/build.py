@@ -41,53 +41,20 @@ class BuildDataTool(object):
     @log.log
     def getParameterInfo(self):
 
-        # # Name
-        # param_1 = ap.Parameter()
-        # param_1.name = u'Name'
-        # param_1.displayName = u'Name'
-        # param_1.parameterType = 'Required'
-        # param_1.direction = 'Input'
-        # param_1.datatype = u'String'
-        #
-        # # Description
-        # param_2 = ap.Parameter()
-        # param_2.name = u'Description'
-        # param_2.displayName = u'Description'
-        # param_2.parameterType = 'Required'
-        # param_2.direction = 'Input'
-        # param_2.datatype = u'String'
-        #
-        # # Parent_Directory
-        # param_3 = ap.Parameter()
-        # param_3.name = u'Parent_Directory'
-        # param_3.displayName = u'Parent Directory'
-        # param_3.parameterType = 'Required'
-        # param_3.direction = 'Input'
-        # param_3.datatype = u'Workspace'
-
         # Project_Area
-        param_4 = ap.Parameter()
-        param_4.name = u'Project_Area'
-        param_4.displayName = u'Project Area'
-        param_4.parameterType = 'Required'
-        param_4.direction = 'Input'
-        param_4.datatype = u'GPFeatureRecordsetlayer'
-        param_4.value = configure.Configuration().empty_polyf_layer
-        # try:
-            # fc = ap.CreateFeatureclass_management("in_memory", "fc", "POLYGON")
-            # efs = ap.MakeFeatureLayer_management(PROJECT.configuration.empty_featureset_layer, "efs")
-            # efs.replaceDataSource(fc)  # p, "FILEGDB_WORKSPACE", n, validate=False)
-            # efs = am.Layer(PROJECT.configuration.empty_featureset_layer)
-            # # param_4.value = u'in_memory\\{714ADB01-ECAF-44AD-9CE1-0DE3ECF49BBB}'
-            # param_4.value = r"C:\Data\asdst\asdst_addin\Install\epf.lyr" # PROJECT.configuration.empty_polyf_layer
-            # param_4.value = PROJECT.configuration.empty_featureset_layer  #efs
-        # except:
-        #     pass
+        param0 = ap.Parameter()
+        param0.name = u'Project_Area'
+        param0.displayName = u'Project Area'
+        param0.parameterType = 'Required'
+        param0.direction = 'Input'
+        param0.datatype = u'GPFeatureRecordsetlayer'
+        param0.value = configure.Configuration().empty_polyf_layer
 
-        return [param_4]
+        return [param0]
 
     @log.log
     def isLicensed(self):
+
         return True
 
     @log.log
@@ -96,11 +63,15 @@ class BuildDataTool(object):
         if validator:
             return validator(parameters).updateParameters()
 
+        return
+
     @log.log
     def updateMessages(self, parameters):
         validator = getattr(self, 'ToolValidator', None)
         if validator:
             return validator(parameters).updateMessages()
+
+        return
 
     @log.log
     def execute(self, parameters, messages):
@@ -266,6 +237,8 @@ class BuildDataTool(object):
         # Save and report status
         proj.mxd.save()
         add_message("ASDST data built OK")
+
+        return
 
 
 def main():

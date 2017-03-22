@@ -95,7 +95,7 @@
                         <Button refID="asdst_addin.cmd_configure" />
                         <Button refID="asdst_addin.cmd_create_project" />
                         <Button refID="asdst_addin.cmd_build_data" />
-                        <!--<Button refID="asdst_addin.cmd_calculate_context" />-->
+                        <Button refID="asdst_addin.cmd_calculate_context" />
                         <!--<Button refID="asdst_addin.cmd_stream_order" />-->
                     </Items>
                 </Toolbar>

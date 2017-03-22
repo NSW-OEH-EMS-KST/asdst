@@ -20,22 +20,24 @@ def exists_return_tuple(description, item):
 
 
 @log.log
-def add_table_to_mxd(mxd, table, name=""):
+def add_table_to_mxd(mxd, table, name="", messages=None):
     df = am.ListDataFrames(mxd)[0]
     tv = am.TableView(table)
     if name:
         tv.name = name
 
     am.AddTableView(df, tv)
-    log.info("Table '{}' added".format(name or tv.name))
+    msg = "Table '{}' added".format(name or tv.name)
+    log.debug(msg)
+    if messages:
+        messages.AddMessage(msg)
 
     return
 
 
 @log.log
-def add_layers_to_mxd(mxd, layers, group_name, layer_type, configuration):
+def add_layers_to_mxd(mxd, layers, group_name, layer_type, configuration, messages=None):
     # layers is a {name: datasource} dictionary
-    log.debug(locals())
 
     if isinstance(mxd, basestring):
         mxd = am.MapDocument(mxd)
@@ -70,10 +72,16 @@ def add_layers_to_mxd(mxd, layers, group_name, layer_type, configuration):
 
         if glyr:
             am.AddLayerToGroup(df, glyr, lyr)
-            log.debug("'{0}' layer added to group '{1}'".format(lyr.name, glyr.name))
+            msg = "'{0}' layer added to group '{1}'".format(lyr.name, glyr.name)
+            log.debug(msg)
+            if messages:
+                messages.AddMessage(msg)
         else:
             am.AddLayer(df, lyr)
-            log.debug("'{0}' layer added".format(lyr.name))
+            msg = "'{0}' layer added".format(lyr.name)
+            log.debug(msg)
+            if messages:
+                messages.AddMessage(msg)
 
     return
 

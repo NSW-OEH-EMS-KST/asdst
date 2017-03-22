@@ -2,8 +2,7 @@ import arcpy as ap
 from os.path import split, join
 import log
 import configure
-import asdst_addin
-# from asdst_addin import configuration, compact_fgdb, add_layers, add_table
+import utils
 
 
 class ContextCalculationTool(object):
@@ -63,6 +62,8 @@ class ContextCalculationTool(object):
     @log.log
     def getParameterInfo(self):
 
+        empty_poly_layer = configure.Configuration().empty_polyf_layer
+
         # Name
         param_1 = ap.Parameter()
         param_1.name = u'Name'
@@ -86,7 +87,7 @@ class ContextCalculationTool(object):
         param_3.parameterType = 'Required'
         param_3.direction = 'Input'
         param_3.datatype = u'Feature Set'
-        # param_3.value = u'in_memory\\{D6FEE351-0F89-4D68-AAF4-1A6B805A2A7E}'
+        param_3.value = empty_poly_layer
 
         # Assessment_Feature
         param_4 = ap.Parameter()
@@ -95,7 +96,7 @@ class ContextCalculationTool(object):
         param_4.parameterType = 'Required'
         param_4.direction = 'Input'
         param_4.datatype = u'Feature Set'
-        # param_4.value = u'in_memory\\{DA9393B7-7574-4602-9E71-34FBD4BD5500}'
+        param_4.value = empty_poly_layer
 
         # Conservation_Feature
         param_5 = ap.Parameter()
@@ -104,7 +105,7 @@ class ContextCalculationTool(object):
         param_5.parameterType = 'Required'
         param_5.direction = 'Input'
         param_5.datatype = u'Feature Set'
-        # param_5.value = u'in_memory\\{B59932FD-3155-48B0-988B-4664221D3034}'
+        param_5.value = empty_poly_layer
 
         return [param_1, param_2, param_3, param_4, param_5]
 
@@ -149,20 +150,12 @@ class ContextCalculationTool(object):
         areas = {"Context": [context, geom_context],
                  "Assessment": [assessment, geom_assessment],
                  "Conservation": [conservation, geom_conservation]}
-        # success = "Context calculation {0} successful ({1})".format(raw_title, gdb)
 
-        # nc.check_areas() TODO ?
+        config = configure.Configuration()
 
         # Make the required file system
-        ok_msg = "Geodatabase {0} created"
-        err_msg = "Error creating {0}: {1}"
-        # try:
-            # ap.Copy_management(ASDST_EXTENSION.config.template_context_gdb, gdb)
-        ap.Copy_management(configuration.template_context_gdb, gdb)
-        add_message(ok_msg.format(gdb))
-        # except Exception as e:
-        #     add_error(err_msg.format(gdb, e.message))
-        #     raise ap.ExecuteError
+        ap.Copy_management(config.template_context_gdb, gdb)
+        add_message("Context geodatabase '{0}' created".format(gdb))
 
         # Import calculation areas into project workspace i.e. save the geometry to be used
         m = "{0} area imported: {1} ({2} - {3})"
@@ -185,7 +178,7 @@ class ContextCalculationTool(object):
 
         # Build loss data
         add_message("Getting layer dictionary...")
-        layer_dict = configuration.layer_dictionary()
+        layer_dict = config.layer_dictionary()
 
         # Calc stats
         add_message("Calculating statistics...")
@@ -195,8 +188,8 @@ class ContextCalculationTool(object):
             n += 1
             res = [n]
             res2 = [n]
-            res.extend([k, configuration.codes[k]])  # model_code, model_desc
-            res2.extend([k, configuration.codes[k]])  # model_code, model_desc
+            res.extend([k, config.codes[k]])  # model_code, model_desc
+            res2.extend([k, config.codes[k]])  # model_code, model_desc
             lyr = v["name"]
             add_message("...{0}".format(lyr))
             lyr = v["1750_local"]
@@ -250,19 +243,19 @@ class ContextCalculationTool(object):
         del ic
 
         # Build AHIMS data if configured
-        if configuration.ahims_sites:
+        if config.ahims_sites:
             add_message("Analysing AHIMS points...")
             res_tot = []
             n = 0
-            for k, v in configuration.codes_ex.iteritems():
+            for k, v in config.codes_ex.iteritems():
                 add_message("...{0}".format(v))
                 n += 1
                 res = [n]
-                res.extend([k, configuration.codes_ex[k]])  # model_code, model_desc
+                res.extend([k, config.codes_ex[k]])  # model_code, model_desc
 
                 tmp_fc = join(gdb, "ahims_{0}_context".format(k))
-                if configuration.ahims_sites:
-                    ap.Intersect_analysis([configuration.ahims_sites, context], tmp_fc)
+                if config.ahims_sites:
+                    ap.Intersect_analysis([config.ahims_sites, context], tmp_fc)
                     sc = ap.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
                     l = [r for r in sc]
                     res.append(len(l))  # context_pts
@@ -270,8 +263,8 @@ class ContextCalculationTool(object):
                     res.append(None)
 
                 tmp_fc = join(gdb, "ahims_{0}_assessment".format(k))
-                if configuration.ahims_sites:
-                    ap.Intersect_analysis([configuration.ahims_sites, assessment], tmp_fc)
+                if config.ahims_sites:
+                    ap.Intersect_analysis([config.ahims_sites, assessment], tmp_fc)
                     sc = ap.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
                     l = [r for r in sc]
                     res.append(len(l))  # context_pts
@@ -279,8 +272,8 @@ class ContextCalculationTool(object):
                     res.append(None)
 
                 tmp_fc = join(gdb, "ahims_{0}_conservation".format(k))
-                if configuration.ahims_sites:
-                    ap.Intersect_analysis([configuration.ahims_sites, conservation], tmp_fc)
+                if config.ahims_sites:
+                    ap.Intersect_analysis([config.ahims_sites, conservation], tmp_fc)
                     sc = ap.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
                     l = [r for r in sc]
                     res.append(len(l))  # conservation_pts
@@ -296,15 +289,15 @@ class ContextCalculationTool(object):
             del ic
 
         # Compact the FGDB workspace
-        add_message(compact_fgdb(gdb))  # note the side effect
+        add_message(utils.compact_fgdb(gdb))  # note the side effect
 
         # Add data to map
         add_message("Adding feature layers to map...")
         lyrs = {k: v[0] for k, v in areas.iteritems()}
-        add_layers(lyrs, "Context {}".format(sane_title), "calc")
+        utils.add_layers_to_mxd(lyrs, "Context {}".format(sane_title), "calc")
         add_message("Adding result tables to map...")
-        add_table(mxd, table_summ, "context_loss")
-        add_table(mxd, table_ahims, "context_ahims")
+        utils.add_table_to_mxd(mxd, table_summ, "context_loss", messages)
+        utils.add_table_to_mxd(mxd, table_ahims, "context_ahims",messages)
 
         # Save and report status
         mxd.save()

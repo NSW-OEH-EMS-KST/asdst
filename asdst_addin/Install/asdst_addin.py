@@ -48,8 +48,9 @@ class StreamOrderButton(object):
 
     @log.log
     def onClick(self):
-        # msg = get_asdst_status()
-        # log.info(msg)
+
+        pa.GPToolDialog(configure.Configuration().toolbox, "ContextCalculationTool")
+
         return
 
 
@@ -59,7 +60,13 @@ class CalculateContextButton(object):
     @log.log
     def onClick(self):
 
-        pa.GPToolDialog(configure.Configuration().toolbox, "ContextCalculationTool")
+        cfg = configure.Configuration()
+        prj = project.Project()
+
+        if cfg.valid() and prj.valid():
+            pa.GPToolDialog(configure.Configuration().toolbox, "ContextCalculationTool")
+        else:
+            addin_message("Configuration and/or project are invalid")
 
         return
 
@@ -69,10 +76,13 @@ class CreateProjectButton(object):
 
     @log.log
     def onClick(self):
-        # if utils.get_dataframe_spatial_reference().factoryCode != 3308:
-        #     addin_message("Set the dataframe spatial reference to 3308")
-        # else:
-        pa.GPToolDialog(configure.Configuration().toolbox, "CreateProjectTool")
+
+        cfg = configure.Configuration()
+
+        if cfg.valid():
+            pa.GPToolDialog(configure.Configuration().toolbox, "CreateProjectTool")
+        else:
+            addin_message("Configuration is invalid")
 
         return
 
@@ -82,12 +92,15 @@ class BuildDataButton(object):
 
     @log.log
     def onClick(self):
+
         cfg = configure.Configuration()
         prj = project.Project()
+
         if cfg.valid() and prj.valid_gdb_and_srs():
             pa.GPToolDialog(configure.Configuration().toolbox, "BuildDataTool")
         else:
             addin_message("Configuration and/or project are invalid")
+
         return
 
 

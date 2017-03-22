@@ -2,6 +2,7 @@ import arcpy as ap
 from os.path import split, join
 import log
 import configure
+import project
 import utils
 
 
@@ -33,29 +34,6 @@ class ContextCalculationTool(object):
 
     @log.log
     def __init__(self):
-        # self.label = u'Context Calculation'
-        # self.description = u'This tool performs a context calculation.\r\n\r\n Three layers are required: \r\n1. Context\r\n2. Assessment\r\n3. Conservation'
-        # self.canRunInBackground = False
-        # self.raw_title = ""
-        # self.description = ""
-        # self.parent_dir = ""
-        # self.geom_context = None
-        # self.geom_assessment = None
-        # self.geom_conservation = None
-        # self.sane_title = ""
-        # self.gdb_path = ""
-        # self.gdb_name = ""
-        # self.gdb = ""
-        # self.context = ""
-        # # self.table_full = ""
-        # self.table_summ = ""
-        # self.table_ahims = ""
-        # self.assessment = ""
-        # self.conservation = ""
-        # self.areas = {}
-        # self.success = ""
-        # self.layer_dict = {}
-        # pass
 
         return
 
@@ -131,9 +109,9 @@ class ContextCalculationTool(object):
         # Get user inputs
         raw_title = parameters[0].valueAsText  # title
         description = parameters[1].valueAsText  # description
-        geom_context = parameters[2]  # geom (feature set)
-        geom_assessment = parameters[3]  # geom (feature set)
-        geom_conservation = parameters[4]  # geom (feature set)
+        geom_context = parameters[2].value  # geom (feature set)
+        geom_assessment = parameters[3].value  # geom (feature set)
+        geom_conservation = parameters[4].value  # geom (feature set)
         sane_title = raw_title.lower().replace(" ", "_")
         mxd = ap.mapping.MapDocument("CURRENT")
         mxd_path = mxd.filePath
@@ -152,6 +130,7 @@ class ContextCalculationTool(object):
                  "Conservation": [conservation, geom_conservation]}
 
         config = configure.Configuration()
+        proj = project.Project()
 
         # Make the required file system
         ap.Copy_management(config.template_context_gdb, gdb)
@@ -178,7 +157,7 @@ class ContextCalculationTool(object):
 
         # Build loss data
         add_message("Getting layer dictionary...")
-        layer_dict = config.layer_dictionary()
+        layer_dict = config.layer_dictionary(proj.gdb)
 
         # Calc stats
         add_message("Calculating statistics...")
@@ -294,7 +273,7 @@ class ContextCalculationTool(object):
         # Add data to map
         add_message("Adding feature layers to map...")
         lyrs = {k: v[0] for k, v in areas.iteritems()}
-        utils.add_layers_to_mxd(lyrs, "Context {}".format(sane_title), "calc")
+        utils.add_layers_to_mxd(lyrs, "Context {}".format(sane_title), "calc", None, config, messages)
         add_message("Adding result tables to map...")
         utils.add_table_to_mxd(mxd, table_summ, "context_loss", messages)
         utils.add_table_to_mxd(mxd, table_ahims, "context_ahims",messages)

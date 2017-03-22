@@ -11,7 +11,7 @@
     </Author>
     <Company>NSW OEH
     </Company>
-    <Date>2017-03-22 15:11
+    <Date>2017-03-22 16:19
     </Date>
     <Targets>
         <Target name="Desktop" version="10.1" />
@@ -29,16 +29,16 @@
                     <Help heading="ASDST help ?">ASDST help to do
                     </Help>
                 </Button>
-                <!--<Button caption="Stream Order"-->
-                        <!--category="ASDST"-->
-                        <!--class="StreamOrderButton"-->
-                        <!--id="asdst_addin.cmd_stream_order"-->
-                        <!--image="Images/LasSlope16.png"-->
-                        <!--message="Calculate Stream Order Data"-->
-                        <!--tip="Stream Order">-->
-                    <!--<Help heading="ASDST help ?">ASDST help to do-->
-                    <!--</Help>-->
-                <!--</Button>-->
+                <Button caption="Stream Order"
+                        category="ASDST"
+                        class="StreamOrderButton"
+                        id="asdst_addin.cmd_stream_order"
+                        image="Images/LasSlope16.png"
+                        message="Calculate Stream Order Data"
+                        tip="Stream Order">
+                    <Help heading="ASDST help ?">ASDST help to do
+                    </Help>
+                </Button>
                 <Button caption="Build Data"
                         category="ASDST"
                         class="BuildDataButton"
@@ -96,7 +96,7 @@
                         <Button refID="asdst_addin.cmd_create_project" />
                         <Button refID="asdst_addin.cmd_build_data" />
                         <Button refID="asdst_addin.cmd_calculate_context" />
-                        <!--<Button refID="asdst_addin.cmd_stream_order" />-->
+                        <Button refID="asdst_addin.cmd_stream_order" />
                     </Items>
                 </Toolbar>
             </Toolbars>

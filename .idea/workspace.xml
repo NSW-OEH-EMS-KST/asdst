@@ -5,11 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9e28cf7a-ce66-4413-9b6d-bf0192638de3" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/asdst_addin/Install/stream.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/build.py" afterPath="$PROJECT_DIR$/asdst_addin/Install/build.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py" afterPath="$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/context.py" afterPath="$PROJECT_DIR$/asdst_addin/Install/context.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/project.py" afterPath="$PROJECT_DIR$/asdst_addin/Install/project.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/Install/utils.py" afterPath="$PROJECT_DIR$/asdst_addin/Install/utils.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/asdst_addin.esriaddin" afterPath="$PROJECT_DIR$/asdst_addin/asdst_addin.esriaddin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asdst_addin/config.xml" afterPath="$PROJECT_DIR$/asdst_addin/config.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -28,21 +29,9 @@
       <file leaf-file-name="config.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/asdst_addin/config.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="761">
-              <caret line="98" column="39" lean-forward="false" selection-start-line="98" selection-start-column="39" selection-end-line="98" selection-end-column="39" />
+            <state relative-caret-position="277">
+              <caret line="40" column="25" lean-forward="false" selection-start-line="40" selection-start-column="25" selection-end-line="40" selection-end-column="25" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="asdst.pyt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/asdst_addin/Install/asdst.pyt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
-              <caret line="11" column="29" lean-forward="false" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
-              <folding>
-                <element signature="e#25#60#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -50,10 +39,22 @@
       <file leaf-file-name="asdst_addin.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
-              <caret line="92" column="0" lean-forward="false" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
+            <state relative-caret-position="197">
+              <caret line="50" column="0" lean-forward="false" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="stream.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/asdst_addin/Install/stream.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-440">
+              <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -62,8 +63,8 @@
       <file leaf-file-name="context.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/asdst_addin/Install/context.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4025">
-              <caret line="300" column="0" lean-forward="true" selection-start-line="300" selection-start-column="0" selection-end-line="300" selection-end-column="0" />
+            <state relative-caret-position="352">
+              <caret line="279" column="0" lean-forward="true" selection-start-line="279" selection-start-column="0" selection-end-line="279" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -74,8 +75,8 @@
       <file leaf-file-name="project.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/asdst_addin/Install/project.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="880">
-              <caret line="136" column="0" lean-forward="false" selection-start-line="136" selection-start-column="0" selection-end-line="136" selection-end-column="0" />
+            <state relative-caret-position="109">
+              <caret line="177" column="30" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="202" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -86,20 +87,8 @@
       <file leaf-file-name="build.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/asdst_addin/Install/build.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="50" column="2" lean-forward="false" selection-start-line="50" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="configure.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/asdst_addin/Install/configure.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3894">
-              <caret line="181" column="8" lean-forward="false" selection-start-line="181" selection-start-column="8" selection-end-line="181" selection-end-column="8" />
+            <state relative-caret-position="110">
+              <caret line="38" column="14" lean-forward="true" selection-start-line="38" selection-start-column="14" selection-end-line="38" selection-end-column="14" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -215,11 +204,13 @@
         <option value="$PROJECT_DIR$/asdst_addin/Install/log.py" />
         <option value="$PROJECT_DIR$/asdst_addin/Install/configure.py" />
         <option value="$PROJECT_DIR$/asdst_addin/Install/asdst.pyt" />
-        <option value="$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py" />
         <option value="$PROJECT_DIR$/asdst_addin/Install/utils.py" />
-        <option value="$PROJECT_DIR$/asdst_addin/config.xml" />
         <option value="$PROJECT_DIR$/asdst_addin/Install/build.py" />
         <option value="$PROJECT_DIR$/asdst_addin/Install/project.py" />
+        <option value="$PROJECT_DIR$/asdst_addin/config.xml" />
+        <option value="$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py" />
+        <option value="$PROJECT_DIR$/asdst_addin/Install/context.gdb/stream.py" />
+        <option value="$PROJECT_DIR$/asdst_addin/Install/stream.py" />
         <option value="$PROJECT_DIR$/asdst_addin/Install/context.py" />
       </list>
     </option>
@@ -553,7 +544,14 @@
       <option name="project" value="LOCAL" />
       <updated>1490156510763</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="added context calc back in">
+      <created>1490158285364</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1490158285364</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -589,7 +587,8 @@
     <MESSAGE value="base code" />
     <MESSAGE value="refactor muchly..." />
     <MESSAGE value="refactor muchly many issues sorted..." />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor muchly many issues sorted..." />
+    <MESSAGE value="added context calc back in" />
+    <option name="LAST_COMMIT_MESSAGE" value="added context calc back in" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -608,9 +607,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/asdst_tbx/asdst_test.py" />
-    <entry file="file://$PROJECT_DIR$/asdst_tbx/asdst0.pyt" />
-    <entry file="file://$PROJECT_DIR$/asdst_tbx/tools/configure.py" />
     <entry file="file://$PROJECT_DIR$/asdst_addin/config.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1936">
@@ -744,6 +740,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -769,7 +766,7 @@
         <state relative-caret-position="176">
           <caret line="11" column="29" lean-forward="false" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
           <folding>
-            <element signature="e#25#60#0" expanded="true" />
+            <element signature="e#25#60#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -805,38 +802,64 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="92" column="0" lean-forward="false" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/asdst_addin/config.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="761">
-          <caret line="98" column="39" lean-forward="false" selection-start-line="98" selection-start-column="39" selection-end-line="98" selection-end-column="39" />
+        <state relative-caret-position="277">
+          <caret line="40" column="25" lean-forward="false" selection-start-line="40" selection-start-column="25" selection-end-line="40" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/project.py">
+    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/build.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="880">
-          <caret line="136" column="0" lean-forward="false" selection-start-line="136" selection-start-column="0" selection-end-line="136" selection-end-column="0" />
+        <state relative-caret-position="110">
+          <caret line="38" column="14" lean-forward="true" selection-start-line="38" selection-start-column="14" selection-end-line="38" selection-end-column="14" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/build.py">
+    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/project.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="50" column="2" lean-forward="false" selection-start-line="50" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+        <state relative-caret-position="109">
+          <caret line="177" column="30" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="202" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/asdst_addin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="50" column="0" lean-forward="false" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/asdst.ConfigureTool.pyt.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/context.gdb/stream.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/asdst_addin/Install/stream.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-440">
+          <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -845,8 +868,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/asdst_addin/Install/context.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4025">
-          <caret line="300" column="0" lean-forward="true" selection-start-line="300" selection-start-column="0" selection-end-line="300" selection-end-column="0" />
+        <state relative-caret-position="352">
+          <caret line="279" column="0" lean-forward="true" selection-start-line="279" selection-start-column="0" selection-end-line="279" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

@@ -4,8 +4,7 @@ import zipfile
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 
-out_zip_name = os.path.join(current_path,
-                            os.path.basename(current_path) + ".esriaddin")
+out_zip_name = os.path.join(current_path, os.path.basename(current_path) + ".esriaddin")
 
 BACKUP_FILE_PATTERN = re.compile(".*_addin_[0-9]+[.]py$", re.IGNORECASE)
 
@@ -22,7 +21,7 @@ with zipfile.ZipFile(out_zip_name, 'w', zipfile.ZIP_STORED) as zip_file:
         for (path, dirs, files) in os.walk(os.path.join(current_path, d)):
             archive_path = os.path.relpath(path, current_path)
             found_file = False
-            for file in (f for f in files if not looks_like_a_backup(f)):
+            for file in (f for f in files if (not looks_like_a_backup(f) and not f[-4:] == ".pyc")):
                 print file
                 archive_file = os.path.join(archive_path, file)
                 print archive_file

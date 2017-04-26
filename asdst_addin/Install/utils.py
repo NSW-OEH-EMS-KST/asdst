@@ -1,8 +1,13 @@
+from __future__ import print_function
 import log
 import arcpy as ap
 import arcpy.mapping as am
 import pythonaddins as pa
 import os
+
+
+def get_appdata_path():
+    return os.path.join(os.environ["USERPROFILE"], "AppData", "Local", "ASDST")
 
 
 @log.log
@@ -15,7 +20,6 @@ def geodata_exists(item):
 
 @log.log
 def exists_return_tuple(description, item):
-
     return [description, item, geodata_exists(item)]
 
 
@@ -36,14 +40,15 @@ def add_table_to_mxd(mxd, table, name="", messages=None):
 
 
 @log.log
-def add_layers_to_mxd(mxd, layers, group_name, layer_type, configuration, messages=None):
+def add_layers_to_mxd(mxd, layers, group_name, layer_type, messages=None):
     # layers is a {name: datasource} dictionary
 
     if isinstance(mxd, basestring):
         mxd = am.MapDocument(mxd)
 
     df = am.ListDataFrames(mxd)[0]
-    lyr_file = configuration.empty_layers.get(layer_type, None)
+    configuration = get_asdst_config()
+    lyr_file = configuration["empty_layers"].get(layer_type, None)
     glyr = None
 
     if group_name:  # try to find the group
@@ -51,7 +56,7 @@ def add_layers_to_mxd(mxd, layers, group_name, layer_type, configuration, messag
         glyr = lyrs[0] if lyrs else None
         if not glyr:  # not found, so create it
             log.debug("Creating group layer '{}".format(group_name))
-            glyr = am.Layer(configuration.empty_group_layer)
+            glyr = am.Layer(configuration["empty_group_layer"])
             glyr.name = group_name
             am.AddLayer(df, glyr)
             log.debug("New group layer added")
@@ -124,3 +129,6 @@ def get_dataframe_spatial_reference():
     df.spatialReference = sr
 
     return sr
+
+
+

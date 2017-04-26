@@ -4,8 +4,14 @@ from functools import wraps
 import logging
 import os
 import inspect
+import utils
+
 
 logger = None
+
+
+def get_log_file_and_path():
+    return os.path.join(utils.get_appdata_path(), "log.txt")
 
 
 def debug(msg):
@@ -36,20 +42,22 @@ def error(msg):
         print("ERROR: " + msg)
 
 
-_ADDIN_MESSAGE = print
+# _ADDIN_MESSAGE = print
 
 
 class ArcStreamHandler(logging.StreamHandler):
     def emit(self, record):
         msg = self.format(record)
         # TODO borrow from GG3...
-        _ADDIN_MESSAGE(msg)
+        # _ADDIN_MESSAGE(msg)
 
 
-def configure_logging(log_file, addin_message):
+def configure_logging():  # log_file, addin_message):
 
-    global _ADDIN_MESSAGE
-    _ADDIN_MESSAGE = addin_message
+    # global _ADDIN_MESSAGE
+    # _ADDIN_MESSAGE = addin_message
+
+    log_file = get_log_file_and_path()
 
     if not os.path.exists(log_file):
         open(log_file, 'a').close()
@@ -115,9 +123,3 @@ def log(f):
 
     return wrapper
 
-
-def main():
-    pass
-
-if __name__ == '__main__':
-    main()

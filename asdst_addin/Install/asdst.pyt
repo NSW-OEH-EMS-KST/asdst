@@ -13,8 +13,8 @@ class Toolbox(object):
         self.tools = [ConfigureTool, CreateProjectTool, BuildDataTool, ContextCalculationTool]
 
 
-def main():
-    return
-
-if __name__ == "__main__":
-    main()
+# def main():
+#     return
+#
+# if __name__ == "__main__":
+#     main()

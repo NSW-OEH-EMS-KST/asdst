@@ -36,6 +36,10 @@ class BuildDataTool(object):
     @log.log
     def __init__(self):
 
+        self.label = u'Build ASDST Data'
+        self.description = u'Build ASDST data for project'
+        self.canRunInBackground = True
+
         return
 
     @log.log
@@ -48,7 +52,7 @@ class BuildDataTool(object):
         param0.parameterType = 'Required'
         param0.direction = 'Input'
         param0.datatype = u'GPFeatureRecordsetlayer'
-        param0.value = configure.Configuration().empty_polyf_layer
+        param0.value = configure.get_asdst_config()["empty_polyf_layer"]
 
         return [param0]
 
@@ -59,6 +63,7 @@ class BuildDataTool(object):
 
     @log.log
     def updateParameters(self, parameters):
+
         validator = getattr(self, 'ToolValidator', None)
         if validator:
             return validator(parameters).updateParameters()
@@ -67,6 +72,7 @@ class BuildDataTool(object):
 
     @log.log
     def updateMessages(self, parameters):
+
         validator = getattr(self, 'ToolValidator', None)
         if validator:
             return validator(parameters).updateMessages()
@@ -103,13 +109,13 @@ class BuildDataTool(object):
 
         # Build data
         add_message("Building data")
-        config = configure.Configuration()
-        layer_dict = config.layer_dictionary(proj.gdb)
+        config = configure.get_asdst_config()
+        layer_dict = configure.get_layer_dictionary(proj.gdb)
         layer_dict2 = {}
 
         add_message("\tClipping model reliability layer")
         n = "drvd_rel"
-        src = os.path.join(config.source_fgdb, n)
+        src = os.path.join(config["source_fgdb"], n)
         lcl = os.path.join(proj.gdb, n)
         add_message("\t\t{}\t{} --> {}".format(n, src, lcl))
         ap.Clip_management(src, "#", lcl, area, "#", "ClippingGeometry")
@@ -117,7 +123,7 @@ class BuildDataTool(object):
 
         add_message("\tClipping survey priority layer")
         lcl = os.path.join(proj.gdb, "drvd_srv")
-        src = os.path.join(config.source_fgdb, "drvd_srv")
+        src = os.path.join(config["source_fgdb"], "drvd_srv")
         add_message("\t\tdrvd_srv\t{} --> {}".format(src, lcl))
         ap.Clip_management(src, "#", lcl, area, "#", "ClippingGeometry")
         layer_dict2["priority"] = lcl
@@ -125,7 +131,7 @@ class BuildDataTool(object):
         add_message("\tClipping regionalisation layers")
         for i in range(1, 5):
             n = "aslu_lvl{0}".format(i)
-            src = os.path.join(config.source_fgdb, n)
+            src = os.path.join(config["source_fgdb"], n)
             lcl = os.path.join(proj.gdb, n)
             add_message("\t\t{}\t{} --> {}".format(n, src, lcl))
             ap.Clip_analysis(src, area, lcl)
@@ -144,7 +150,7 @@ class BuildDataTool(object):
                 pass
 
         add_message("\tCalculating current layers")
-        src = os.path.join(config.source_fgdb, "cu_param3")
+        src = os.path.join(config["source_fgdb"], "cu_param3")
         lup = os.path.join(proj.gdb, "cu_param3")
         ap.Clip_management(src, "#", lup, area, "#", "ClippingGeometry")
         loss_rasters = {}
@@ -217,22 +223,22 @@ class BuildDataTool(object):
         utils.add_table_to_mxd(proj.mxd, loss)
 
         lyrs = {"Model Reliability": layer_dict2["reliability"]}
-        utils.add_layers_to_mxd(proj.mxd, lyrs, "Derived", "relia", config)
+        utils.add_layers_to_mxd(proj.mxd, lyrs, "Derived", "relia")
 
         lyrs = {"Survey Priority": layer_dict2["priority"]}
-        utils.add_layers_to_mxd(proj.mxd, lyrs, "Derived", "prior", config)
+        utils.add_layers_to_mxd(proj.mxd, lyrs, "Derived", "prior")
 
         lyrs = {"Accumulated Impact": layer_dict2["impact"]}
-        utils.add_layers_to_mxd(proj.mxd, lyrs, "Derived", "accim", config)
+        utils.add_layers_to_mxd(proj.mxd, lyrs, "Derived", "accim")
 
         lyrs = {"Regionalisation Level {0}".format(i): layer_dict2["aslu_lvl{0}".format(i)] for i in range(1, 5)}
-        utils.add_layers_to_mxd(proj.mxd, lyrs, "Regionalisation", "regio", config)
+        utils.add_layers_to_mxd(proj.mxd, lyrs, "Regionalisation", "regio")
 
         lyrs = {v["name"]: v["1750_local"] for k, v in layer_dict.iteritems()}
-        utils.add_layers_to_mxd(proj.mxd, lyrs, "Pre-1750", "model", config)
+        utils.add_layers_to_mxd(proj.mxd, lyrs, "Pre-1750", "model")
 
         lyrs = {v["name"]: v["curr_local"] for k, v in layer_dict.iteritems()}
-        utils.add_layers_to_mxd(proj.mxd, lyrs, "Current", "model", config)
+        utils.add_layers_to_mxd(proj.mxd, lyrs, "Current", "model")
 
         # Save and report status
         proj.mxd.save()

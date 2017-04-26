@@ -17,7 +17,7 @@ except:
 sleep(1)
 
 print "deleting profile"
-prof_dir = r"C:\Users\byed\AppData\Roaming\ESRI\Desktop10.4\ArcMap"
+prof_dir = "C:\\Users\\byed\\AppData\\Roaming\\ESRI"
 try:  # remove the profile !!
     rmtree(prof_dir)
     print "Removed {}".format(prof_dir)
@@ -33,22 +33,22 @@ except:
     pass
 
 
-def replace(file_path, pattern, subst):
-    fh, abs_path = mkstemp()  # Create temp file
-    with open(abs_path, 'w') as new_file:
-        with open(file_path) as old_file:
-            for line in old_file:
-                if pattern in line:
-                    new_file.write(subst + '\n')
-                else:
-                    new_file.write(line)
-    close(fh)
-    remove(file_path)  # Remove original file
-    move(abs_path, file_path)  # Move new file
-
-# update the config file with new date + time
-cfg_file = r"C:\Data\asdst\asdst_addin\config.xml"
-replace(cfg_file, "    <Date>", "    <Date>" + strftime("%Y-%m-%d %H:%M"))
+# def replace(file_path, pattern, subst):
+#     fh, abs_path = mkstemp()  # Create temp file
+#     with open(abs_path, 'w') as new_file:
+#         with open(file_path) as old_file:
+#             for line in old_file:
+#                 if pattern in line:
+#                     new_file.write(subst + '\n')
+#                 else:
+#                     new_file.write(line)
+#     close(fh)
+#     remove(file_path)  # Remove original file
+#     move(abs_path, file_path)  # Move new file
+#
+# # update the config file with new date + time
+# cfg_file = r"C:\Data\asdst\asdst_addin\config.xml"
+# replace(cfg_file, "    <Date>", "    <Date>" + strftime("%Y-%m-%d %H:%M"))
 
 # Create ESRI Add-in file
 cwd = getcwd()
@@ -62,18 +62,19 @@ sleep(1)
 # system('"{0}" {1} /s'.format(esri, split(cwd)[-1] + ".esriaddin"))
 print "Replacing files"
 fn1 = split(cwd)[-1] + ".esriaddin"
-fn2 = r"C:\Users\byed\Documents\ArcGIS\AddIns\Desktop10.4\asdst_addin.esriaddin"
-if not exists(fn2):
-    fn2 = r"C:\Users\aspire\Documents\ArcGIS\AddIns\Desktop10.4\asdst_addin.esriaddin"
+udir = "C:\\Users\\byed\\"
+if not exists(udir):
+    udir = "C:\\Users\\aspire\\"
+fn2 = join(udir, "Documents\\ArcGIS\\AddIns\\Desktop10.4\\asdst_addin.esriaddin")
 
 copyfile(fn1, fn2)
 print "Files replaced"
 sleep(1)
 
-# Open test map document.
-print "Re-opening ArcMap"
-mapdoc = r"C:\Data\asdst_test\test.mxd"
-system(mapdoc)
+# # Open test map document.
+# print "Re-opening ArcMap"
+# mapdoc = r"C:\Data\asdst_test\test_1.mxd"
+# system(mapdoc)
 # sleep(20)
 # print "and closing again!!!"
 # try:  # Close ArcMap if it is open

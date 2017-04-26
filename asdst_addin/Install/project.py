@@ -1,5 +1,4 @@
-import arcpy as ap
-import arcpy.mapping as am
+import arcpy
 import os
 import log
 import ast
@@ -13,13 +12,13 @@ class Project(object):
 
         self.title = None
         self.gdb = None
-        self.mxd = am.MapDocument("CURRENT")
+        self.mxd = arcpy.mapping.MapDocument("CURRENT")
         self.df = None
-        self.df = am.ListDataFrames(self.mxd)[0]
+        self.df = arcpy.mapping.ListDataFrames(self.mxd)[0]
         self.gdb = None
 
         gdb = self.mxd.filePath.replace(".mxd", ".gdb")
-        if ap.Exists(gdb):  # standard case, same name as mxd
+        if arcpy.Exists(gdb):  # standard case, same name as mxd
             self.gdb = gdb
         else:  # mxd saved to a new name, go to tags
             tags = self.mxd.tags
@@ -52,7 +51,7 @@ class Project(object):
     def get_status(self):
 
         result = []
-        for k, v in configure.Configuration().layer_dictionary(self.gdb or "NONE").iteritems():
+        for k, v in configure.get_layer_dictionary(self.gdb or "NONE").iteritems():
             result.append(utils.exists_return_tuple("description", v["1750_local"]))
             result.append(utils.exists_return_tuple("description", v["curr_local"]))
 
@@ -106,13 +105,17 @@ class CreateProjectTool(object):
     @log.log
     def __init__(self):
 
+        self.label = u'Create project'
+        self.description = u'Create a new ASDST project'
+        self.canRunInBackground = True
+
         return
 
     @log.log
     def getParameterInfo(self):
 
         # Name
-        param_1 = ap.Parameter()
+        param_1 = arcpy.Parameter()
         param_1.name = u'Name'
         param_1.displayName = u'Name'
         param_1.parameterType = 'Required'
@@ -120,7 +123,7 @@ class CreateProjectTool(object):
         param_1.datatype = u'String'
 
         # Description
-        param_2 = ap.Parameter()
+        param_2 = arcpy.Parameter()
         param_2.name = u'Description'
         param_2.displayName = u'Description'
         param_2.parameterType = 'Required'
@@ -128,7 +131,7 @@ class CreateProjectTool(object):
         param_2.datatype = u'String'
 
         # Parent_Directory
-        param_3 = ap.Parameter()
+        param_3 = arcpy.Parameter()
         param_3.name = u'Parent_Directory'
         param_3.displayName = u'Parent Directory'
         param_3.parameterType = 'Required'
@@ -166,17 +169,17 @@ class CreateProjectTool(object):
         mxd_file = base + ".mxd"
         gdb = base + ".gdb"
 
-        config = configure.Configuration()
+        config = configure.get_asdst_config()
 
         messages.addMessage("Creating project geodatabase '{}'".format(gdb))
-        ap.Copy_management(config.template_project_gdb, gdb)
+        arcpy.Copy_management(config["template_project_gdb"], gdb)
 
         messages.addMessage("Creating project map document '{}'".format(mxd_file))
-        ap.Copy_management(config.template_mxd, mxd_file)
+        arcpy.Copy_management(config["template_mxd"], mxd_file)
 
         # Fix default MXD tags
         messages.addMessage("Updating tags")
-        mxd = ap.mapping.MapDocument(mxd_file)
+        mxd = arcpy.mapping.MapDocument(mxd_file)
         mxd.title = raw_title
         tag = {"ASDST": "DO NOT EDIT THIS TAG",
                "Version": 7,
@@ -193,10 +196,3 @@ class CreateProjectTool(object):
 
         # Launch new MXD
         os.system(mxd_file)
-
-
-def main():
-    return
-
-if __name__ == '__main__':
-    main()

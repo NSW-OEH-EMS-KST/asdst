@@ -3,8 +3,8 @@ import arcpy as ap
 import os
 import log
 # import ast
-# import utils
-import configure
+import utils
+# import configure
 
 
 class StreamOrderTool(object):
@@ -35,6 +35,10 @@ class StreamOrderTool(object):
 
     @log.log
     def __init__(self):
+
+        self.label = u'Stream'
+        self.description = u'Build stream data'
+        self.canRunInBackground = True
 
         return
 
@@ -96,13 +100,13 @@ class StreamOrderTool(object):
         mxd_file = base + ".mxd"
         gdb = base + ".gdb"
 
-        config = configure.Configuration()
+        config = utils.get_asdst_config()
 
         messages.addMessage("Creating project geodatabase '{}'".format(gdb))
-        ap.Copy_management(config.template_project_gdb, gdb)
+        ap.Copy_management(config["template_project_gdb"], gdb)
 
         messages.addMessage("Creating project map document '{}'".format(mxd_file))
-        ap.Copy_management(config.template_mxd, mxd_file)
+        ap.Copy_management(config["template_mxd"], mxd_file)
 
         # Fix default MXD tags
         messages.addMessage("Updating tags")

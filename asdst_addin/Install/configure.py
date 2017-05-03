@@ -138,7 +138,7 @@ def get_config_file_and_path():
 def get_default_settings():
     script_path = os.path.dirname(os.path.realpath(__file__))
 
-    toolbox = os.path.join(script_path, "asdst.pyt")
+    toolbox = os.path.join(script_path, "asdst_toolbox.pyt")
     template_project_gdb = os.path.join(script_path, "project.gdb")
     template_context_gdb = os.path.join(script_path, "context.gdb")
 

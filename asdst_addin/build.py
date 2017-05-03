@@ -72,9 +72,10 @@ print "Files replaced"
 sleep(1)
 
 # # Open test map document.
-# print "Re-opening ArcMap"
+print "Re-opening ArcMap"
 # mapdoc = r"C:\Data\asdst_test\test_1.mxd"
-# system(mapdoc)
+arcmap = 'c:\\"Program Files (x86)"\\ArcGIS\\Desktop10.4\\bin\\arcmap.exe /log'
+system(arcmap)
 # sleep(20)
 # print "and closing again!!!"
 # try:  # Close ArcMap if it is open

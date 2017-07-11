@@ -16,21 +16,21 @@ except:
     pass
 sleep(1)
 
-print "deleting profile"
-prof_dir = "C:\\Users\\byed\\AppData\\Roaming\\ESRI"
-try:  # remove the profile !!
-    rmtree(prof_dir)
-    print "Removed {}".format(prof_dir)
-except:
-    pass
+# print "deleting profile"
+# prof_dir = "C:\\Users\\byed\\AppData\\Roaming\\ESRI"
+# try:  # remove the profile !!
+#     rmtree(prof_dir)
+#     print "Removed {}".format(prof_dir)
+# except:
+#     pass
 
-print "deleting cache"
-cache_dir = r"C:\Users\byed\AppData\Local\ESRI\Desktop10.4\AssemblyCache\{A1CEE72A-50AA-317E-DB3E-FBAA3EBF2523}"
-try:  # remove the profile !!
-    rmtree(cache_dir)
-    print "Removed {}".format(cache_dir)
-except:
-    pass
+# print "deleting cache"
+# cache_dir = r"C:\Users\byed\AppData\Local\ESRI\Desktop10.1\AssemblyCache\{A1CEE72A-50AA-317E-DB3E-FBAA3EBF2523}"
+# try:  # remove the profile !!
+#     rmtree(cache_dir)
+#     print "Removed {}".format(cache_dir)
+# except:
+#     pass
 
 
 # def replace(file_path, pattern, subst):
@@ -53,7 +53,7 @@ except:
 # Create ESRI Add-in file
 cwd = getcwd()
 print "Building addin"
-system("C:\Python27\ArcGIS10.4\python.exe " + join(cwd, "makeaddin.py"))
+system("C:\Python27\ArcGIS10.1\python.exe " + join(cwd, "makeaddin.py"))
 print "Addin built"
 sleep(1)
 
@@ -65,7 +65,7 @@ fn1 = split(cwd)[-1] + ".esriaddin"
 udir = "C:\\Users\\byed\\"
 if not exists(udir):
     udir = "C:\\Users\\aspire\\"
-fn2 = join(udir, "Documents\\ArcGIS\\AddIns\\Desktop10.4\\asdst_addin.esriaddin")
+fn2 = join(udir, "Documents\\ArcGIS\\AddIns\\Desktop10.1\\asdst_addin.esriaddin")
 
 copyfile(fn1, fn2)
 print "Files replaced"
@@ -74,7 +74,7 @@ sleep(1)
 # # Open test map document.
 print "Re-opening ArcMap"
 # mapdoc = r"C:\Data\asdst_test\test_1.mxd"
-arcmap = 'c:\\"Program Files (x86)"\\ArcGIS\\Desktop10.4\\bin\\arcmap.exe /log'
+arcmap = 'c:\\"Program Files (x86)"\\ArcGIS\\Desktop10.1\\bin\\arcmap.exe /log'
 system(arcmap)
 # sleep(20)
 # print "and closing again!!!"

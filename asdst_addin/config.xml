@@ -14,53 +14,41 @@
     <Date>2017-04-10 12:29
     </Date>
     <Targets>
-        <Target name="Desktop" version="10.4" />
+        <Target name="Desktop" version="10.1" />
     </Targets>
     <AddIn language="PYTHON" library="asdst_addin.py" namespace="asdst_addin">
         <ArcMap>
             <Commands>
-                <!--<Button caption="Create New ASDST Project"-->
-                        <!--category="ASDST"-->
-                        <!--class="CreateProjectButton"-->
-                        <!--id="asdst_addin.cmd_create_project"-->
-                        <!--image="Images/AddInDesktop16.png"-->
-                        <!--message="Create an empty ASDST project: the first step in an ASDST analysis workflow. At least one layer must be present in the map to enable this tool."-->
-                        <!--tip="Create Project">-->
-                    <!--<Help heading="ASDST help ?">ASDST help to do-->
-                    <!--</Help>-->
-                <!--</Button>-->
-                <!--<Button caption="Stream Data"-->
-                        <!--category="ASDST"-->
-                        <!--class="StreamDataButton"-->
-                        <!--id="asdst_addin.cmd_stream_order"-->
-                        <!--image="Images/LasSlope16.png"-->
-                        <!--message="Build Stream Data"-->
-                        <!--tip="Stream Order">-->
-                    <!--<Help heading="ASDST help ?">ASDST help to do-->
-                    <!--</Help>-->
-                <!--</Button>-->
-                <!--<Button caption="Build Data"-->
-                        <!--category="ASDST"-->
-                        <!--class="BuildDataButton"-->
-                        <!--id="asdst_addin.cmd_build_data"-->
-                        <!--image="Images/GeoprocessingPackage16.png"-->
-                        <!--message="Build project data"-->
-                        <!--tip="Build Current, Pre-1750 and Loss Data">-->
-                    <!--<Help-->
-                        <!--heading="ASDST help ?">ASDST help to do-->
-                    <!--</Help>-->
-                <!--</Button>-->
-                <!--<Button caption="Context Calculation"-->
-                        <!--category="ASDST"-->
-                        <!--class="CalculateContextButton"-->
-                        <!--id="asdst_addin.cmd_calculate_context"-->
-                        <!--image="Images/LocationGetPolygon16.png"-->
-                        <!--message="Make a context calculation"-->
-                        <!--tip="Make a context calculation">-->
-                    <!--<Help-->
-                        <!--heading="ASDST help ?">ASDST help to do-->
-                    <!--</Help>-->
-                <!--</Button>-->
+                <Button caption="Create New ASDST Project"
+                        category="ASDST"
+                        class="CreateProjectButton"
+                        id="asdst_addin.cmd_create_project"
+                        image="Images/AddInDesktop16.png"
+                        message="Create an empty ASDST project"
+                        tip="Create Project">
+                    <Help heading="ASDST help ?">TO DO
+                    </Help>
+                </Button>
+                <Button caption="Build Data"
+                        category="ASDST"
+                        class="BuildDataButton"
+                        id="asdst_addin.cmd_build_data"
+                        image="Images/GeoprocessingPackage16.png"
+                        message="Build project data"
+                        tip="Build Current, Pre-1750 and Loss Data">
+                    <Help heading="ASDST help ?">TO DO
+                    </Help>
+                </Button>
+                <Button caption="Calculate Context"
+                        category="ASDST"
+                        class="CalculateContextButton"
+                        id="asdst_addin.cmd_calculate_context"
+                        image="Images/LocationGetPolygon16.png"
+                        message="Calculate the heritage context"
+                        tip="Calculates the heritage context">
+                    <Help heading="ASDST help ?">TO DO
+                    </Help>
+                </Button>
                 <Button caption="Configure"
                         category="ASDST"
                         class="ConfigureButton"
@@ -68,7 +56,7 @@
                         image="Images/GenericWrench_B16.png"
                         message="Configure"
                         tip="Check/set toolbox configuration">
-                    <Help heading="ASDST help ?">ASDST help to do
+                    <Help heading="ASDST help ?">TO DO
                     </Help>
                 </Button>
                 <Button caption="ASDST"
@@ -78,25 +66,23 @@
                         image=""
                         message="Display ASDST status"
                         tip="Reflects the current ASDST configuration and project status">
-                    <Help heading="ASDST help ?">ASDST help to do
+                    <Help heading="ASDST help ?">TO DO
                     </Help>
                 </Button>
             </Commands>
             <Extensions>
                 <Extension autoLoad="True" category="ASDST" class="AsdstExtension"
-                           description="Aboriginal Sites Decision Support Tool" id="asdst_addin.extension"
+                           description="Aboriginal Sites Decision Support Tools" id="asdst_addin.extension"
                            name="ASDST" productName="ASDST" showInExtensionDialog="True" />
             </Extensions>
             <Toolbars>
-                <Toolbar caption="ASDST" category="ASDST"
-                         id="asdst_addin.toolbar"  showInitially="true">
+                <Toolbar caption="ASDST" category="ASDST" id="asdst_addin.toolbar"  showInitially="true">
                     <Items>
                         <Button refID="asdst_addin.cmd_info" />
                         <Button refID="asdst_addin.cmd_configure" />
-                        <!--<Button refID="asdst_addin.cmd_create_project" />-->
-                        <!--<Button refID="asdst_addin.cmd_build_data" />-->
-                        <!--<Button refID="asdst_addin.cmd_calculate_context" />-->
-                        <!--<Button refID="asdst_addin.cmd_stream_order" />-->
+                        <Button refID="asdst_addin.cmd_create_project" />
+                        <Button refID="asdst_addin.cmd_build_data" />
+                        <Button refID="asdst_addin.cmd_calculate_context" />
                     </Items>
                 </Toolbar>
             </Toolbars>

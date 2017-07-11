@@ -1,38 +1,13 @@
-import arcpy as ap
+import arcpy
 from os.path import split, join
-import log
-import configure
-import project
-import utils
+from log import log
+from utils import compact_fgdb
+from asdst_addin import get_system_config, get_map_config, get_user_config, add_layers_to_mxd, add_table_to_mxd, get_layer_map, get_codes, get_codes_ex
 
 
 class ContextCalculationTool(object):
 
-    class ToolValidator(object):
-        """Class for validating a tool's parameter values and controlling
-        the behavior of the tool's dialog."""
-
-        def __init__(self, parameters):
-            """Setup arcpy and the list of tool parameters."""
-            self.params = parameters
-
-        def initializeParameters(self):
-            """Refine the properties of a tool's parameters.  This method is
-            called when the tool is opened."""
-            return
-
-        def updateParameters(self):
-            """Modify the values and properties of parameters before internal
-            validation is performed.  This method is called whenever a parameter
-            has been changed."""
-            return
-
-        def updateMessages(self):
-            """Modify the messages created by internal validation for each tool
-            parameter.  This method is called after internal validation."""
-            return
-
-    @log.log
+    @log
     def __init__(self):
 
         self.label = u'Calculate Context'
@@ -41,13 +16,13 @@ class ContextCalculationTool(object):
 
         return
 
-    @log.log
+    @log
     def getParameterInfo(self):
 
-        empty_poly_layer = configure.get_asdst_config().empty_polyf_layer
+        empty_poly_layer = get_system_config()["empty_polyf_layer"]
 
         # Name
-        param_1 = ap.Parameter()
+        param_1 = arcpy.Parameter()
         param_1.name = u'Name'
         param_1.displayName = u'Name'
         param_1.parameterType = 'Required'
@@ -55,7 +30,7 @@ class ContextCalculationTool(object):
         param_1.datatype = u'String'
 
         # Description
-        param_2 = ap.Parameter()
+        param_2 = arcpy.Parameter()
         param_2.name = u'Description'
         param_2.displayName = u'Description'
         param_2.parameterType = 'Required'
@@ -63,7 +38,7 @@ class ContextCalculationTool(object):
         param_2.datatype = u'String'
 
         # Context_Feature
-        param_3 = ap.Parameter()
+        param_3 = arcpy.Parameter()
         param_3.name = u'Context_Feature'
         param_3.displayName = u'Context Feature'
         param_3.parameterType = 'Required'
@@ -72,7 +47,7 @@ class ContextCalculationTool(object):
         param_3.value = empty_poly_layer
 
         # Assessment_Feature
-        param_4 = ap.Parameter()
+        param_4 = arcpy.Parameter()
         param_4.name = u'Assessment_Feature'
         param_4.displayName = u'Assessment Feature'
         param_4.parameterType = 'Required'
@@ -81,7 +56,7 @@ class ContextCalculationTool(object):
         param_4.value = empty_poly_layer
 
         # Conservation_Feature
-        param_5 = ap.Parameter()
+        param_5 = arcpy.Parameter()
         param_5.name = u'Conservation_Feature'
         param_5.displayName = u'Conservation Feature'
         param_5.parameterType = 'Required'
@@ -91,36 +66,30 @@ class ContextCalculationTool(object):
 
         return [param_1, param_2, param_3, param_4, param_5]
 
-    def isLicensed(self):
+    # def isLicensed(self):
+    #
+    #     return True
+    #
+    # def updateParameters(self, parameters):
+    #
+    #     return
+    #
+    # def updateMessages(self, parameters):
+    #
+    #     return
 
-        return True
-
-    def updateParameters(self, parameters):
-
-        validator = getattr(self, 'ToolValidator', None)
-        if validator:
-            return validator(parameters).updateParameters()
-
-    def updateMessages(self, parameters):
-
-        validator = getattr(self, 'ToolValidator', None)
-        if validator:
-            return validator(parameters).updateMessages()
-
-    @log.log
+    @log
     def execute(self, parameters, messages):
-        # Aliases
-        add_message = messages.addMessage
-        add_error = messages.addErrorMessage
 
         # Get user inputs
+        messages.addMessage("Reading inputs")
         raw_title = parameters[0].valueAsText  # title
         description = parameters[1].valueAsText  # description
         geom_context = parameters[2].value  # geom (feature set)
         geom_assessment = parameters[3].value  # geom (feature set)
         geom_conservation = parameters[4].value  # geom (feature set)
         sane_title = raw_title.lower().replace(" ", "_")
-        mxd = ap.mapping.MapDocument("CURRENT")
+        mxd = arcpy.mapping.MapDocument("CURRENT")
         mxd_path = mxd.filePath
         gdb_path = split(mxd_path)[0]
         gdb_name = "context_{0}".format(sane_title) + ".gdb"
@@ -136,12 +105,13 @@ class ContextCalculationTool(object):
                  "Assessment": [assessment, geom_assessment],
                  "Conservation": [conservation, geom_conservation]}
 
-        config = configure.get_asdst_config(messages)
-        proj = project.Project()
+        messages.addMessage("Reading configuration")
+        config = get_system_config()
+        proj_gdb = get_map_config()["gdb"]
 
         # Make the required file system
-        ap.Copy_management(config.template_context_gdb, gdb)
-        add_message("Context geodatabase '{0}' created".format(gdb))
+        arcpy.Copy_management(config["template_context_gdb"], gdb)
+        messages.addMessage("Context geodatabase '{0}' created".format(gdb))
 
         # Import calculation areas into project workspace i.e. save the geometry to be used
         m = "{0} area imported: {1} ({2} - {3})"
@@ -150,44 +120,45 @@ class ContextCalculationTool(object):
                 # might be a feature set
                 v[1].save(v[0])
                 msg = m.format(k, v[0], "New Feature set", "in_memory")
-                add_message(msg)
+                messages.addMessage(msg)
             except:
                 try:
                     # or might be a layer
-                    ap.CopyFeatures_management(v[1], v[0])
+                    arcpy.CopyFeatures_management(v[1], v[0])
                     msg = m.format(k, v[0], "Feature layer", v[1])
-                    add_message(msg)
+                    messages.addMessage(msg)
                 except Exception as e:
                     # or fuck knows what it is
-                    add_error("Could not copy aoi geometry {0}".format(e.message))
-                    raise ap.ExecuteError
+                    messages.addErrorMessage("Could not copy aoi geometry {0}".format(e.message))
+                    raise arcpy.ExecuteError
 
         # Build loss data
-        add_message("Getting layer dictionary...")
-        layer_dict = config.layer_dictionary(proj.gdb)
+        messages.addMessage("Getting layer dictionary...")
+        layer_dict = get_layer_map(proj_gdb)
 
         # Calc stats
-        add_message("Calculating statistics...")
+        messages.addMessage("Calculating statistics...")
+        codes = get_codes()
         n = 0
         res_tot = []
         for k, v in layer_dict.iteritems():
             n += 1
             res = [n]
             res2 = [n]
-            res.extend([k, config.codes[k]])  # model_code, model_desc
-            res2.extend([k, config.codes[k]])  # model_code, model_desc
+            res.extend([k, codes[k]])  # model_code, model_desc
+            res2.extend([k, codes[k]])  # model_code, model_desc
             lyr = v["name"]
-            add_message("...{0}".format(lyr))
+            messages.addMessage("...{0}".format(lyr))
             lyr = v["1750_local"]
             # context
             tmp_ras = join(gdb, "context_{0}_1750".format(k))
-            ap.Clip_management(lyr, "#", tmp_ras, context, "#", "ClippingGeometry")
-            sumcont1750 = ap.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
+            arcpy.Clip_management(lyr, "#", tmp_ras, context, "#", "ClippingGeometry")
+            sumcont1750 = arcpy.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
             res.append(sumcont1750)  # context_sum_1750
             lyr = v["curr_local"]
             tmp_ras = join(gdb, "context_{0}_curr".format(k))
-            ap.Clip_management(lyr, "#", tmp_ras, context, "#", "ClippingGeometry")
-            sumcontcurr = ap.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
+            arcpy.Clip_management(lyr, "#", tmp_ras, context, "#", "ClippingGeometry")
+            sumcontcurr = arcpy.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
             res.append(sumcontcurr)  # context_sum_current
             sumchange = (sumcontcurr - sumcont1750)
             res.append(sumchange)  # context_change
@@ -201,8 +172,8 @@ class ContextCalculationTool(object):
 
             # assessment
             tmp_ras = join(gdb, "assessment_{0}_curr".format(k))
-            ap.Clip_management(lyr, "#", tmp_ras, assessment, "#", "ClippingGeometry")
-            sumass = ap.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
+            arcpy.Clip_management(lyr, "#", tmp_ras, assessment, "#", "ClippingGeometry")
+            sumass = arcpy.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
             res.append(sumass)  # assessment_sum
             if sumcontcurr == 0:
                 pcass = 0
@@ -212,8 +183,8 @@ class ContextCalculationTool(object):
 
             # conservation
             tmp_ras = join(gdb, "conservation_{0}_curr".format(k))
-            ap.Clip_management(lyr, "#", tmp_ras, conservation, "#", "ClippingGeometry")
-            sumcons = ap.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
+            arcpy.Clip_management(lyr, "#", tmp_ras, conservation, "#", "ClippingGeometry")
+            sumcons = arcpy.RasterToNumPyArray(tmp_ras, nodata_to_value=0).sum()
             res.append(sumcons)  # conservation_sum
             if sumcontcurr == 0:
                 pccons = 0
@@ -223,69 +194,71 @@ class ContextCalculationTool(object):
 
             res_tot.append(res)
 
-        ic = ap.da.InsertCursor(table_summ, "*")
+        ic = arcpy.da.InsertCursor(table_summ, "*")
         for r in res_tot:
             ic.insertRow(r)
         del ic
 
         # Build AHIMS data if configured
-        if config.ahims_sites:
-            add_message("Analysing AHIMS points...")
+        ahims_sites = get_user_config()["ahims_sites"]
+
+        if ahims_sites:
+            messages.addMessage("Analysing AHIMS points...")
+            codes_ex = get_codes_ex()
             res_tot = []
             n = 0
-            for k, v in config.codes_ex.iteritems():
-                add_message("...{0}".format(v))
+            for k, v in codes_ex.iteritems():
+                messages.addMessage("...{0}".format(v))
                 n += 1
                 res = [n]
-                res.extend([k, config.codes_ex[k]])  # model_code, model_desc
+                res.extend([k, codes_ex[k]])  # model_code, model_desc
 
                 tmp_fc = join(gdb, "ahims_{0}_context".format(k))
-                if config.ahims_sites:
-                    ap.Intersect_analysis([config.ahims_sites, context], tmp_fc)
-                    sc = ap.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
-                    l = [r for r in sc]
-                    res.append(len(l))  # context_pts
-                else:
-                    res.append(None)
+                # if config.ahims_sites:
+                arcpy.Intersect_analysis([ahims_sites, context], tmp_fc)
+                sc = arcpy.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
+                l = [r for r in sc]
+                res.append(len(l))  # context_pts
+                # else:
+                #     res.append(None)
 
                 tmp_fc = join(gdb, "ahims_{0}_assessment".format(k))
-                if config.ahims_sites:
-                    ap.Intersect_analysis([config.ahims_sites, assessment], tmp_fc)
-                    sc = ap.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
-                    l = [r for r in sc]
-                    res.append(len(l))  # context_pts
-                else:
-                    res.append(None)
+                # if config.ahims_sites:
+                arcpy.Intersect_analysis([ahims_sites, assessment], tmp_fc)
+                sc = arcpy.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
+                l = [r for r in sc]
+                res.append(len(l))  # context_pts
+                # else:
+                #     res.append(None)
 
                 tmp_fc = join(gdb, "ahims_{0}_conservation".format(k))
-                if config.ahims_sites:
-                    ap.Intersect_analysis([config.ahims_sites, conservation], tmp_fc)
-                    sc = ap.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
-                    l = [r for r in sc]
-                    res.append(len(l))  # conservation_pts
-                    del sc
-                else:
-                    res.append(None)
+                # if config.ahims_sites:
+                arcpy.Intersect_analysis([ahims_sites, conservation], tmp_fc)
+                sc = arcpy.da.SearchCursor(tmp_fc, "*", '"{0}" IS NOT NULL'.format(k))
+                l = [r for r in sc]
+                res.append(len(l))  # conservation_pts
+                del sc
+                # else:
+                #     res.append(None)
 
                 res_tot.append(res)
 
-            ic = ap.da.InsertCursor(table_ahims, "*")
+            ic = arcpy.da.InsertCursor(table_ahims, "*")
             for r in res_tot:
                 ic.insertRow(r)
             del ic
 
         # Compact the FGDB workspace
-        add_message(utils.compact_fgdb(gdb))  # note the side effect
+        messages.addMessage(compact_fgdb(gdb))  # note the side effect
 
         # Add data to map
-        add_message("Adding feature layers to map...")
+        messages.addMessage("Adding feature layers to map...")
         lyrs = {k: v[0] for k, v in areas.iteritems()}
-        utils.add_layers_to_mxd(lyrs, "Context {}".format(sane_title), "calc", None, config, messages)
-        add_message("Adding result tables to map...")
-        utils.add_table_to_mxd(mxd, table_summ, "context_loss", messages)
-        utils.add_table_to_mxd(mxd, table_ahims, "context_ahims",messages)
+        add_layers_to_mxd(lyrs, "Context {}".format(sane_title), "calc", messages)
+        messages.addMessage("Adding result tables to map...")
+        add_table_to_mxd(table_summ, "context_loss", messages)
+        add_table_to_mxd(table_ahims, "context_ahims", messages)
 
         # Save and report status
         mxd.save()
-        add_message("Context calculation {0} successful ({1})".format(raw_title, gdb))
-
+        messages.addMessage("Context calculation {0} successful ({1})".format(raw_title, gdb))

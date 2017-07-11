@@ -3,7 +3,7 @@
 from configure import ConfigureTool
 from project import CreateProjectTool
 from context import ContextCalculationTool
-from build_project_data import BuildDataTool
+from build import BuildDataTool
 
 
 class Toolbox(object):
@@ -13,8 +13,3 @@ class Toolbox(object):
         self.tools = [ConfigureTool, CreateProjectTool, BuildDataTool, ContextCalculationTool]
 
 
-# def main():
-#     return
-#
-# if __name__ == "__main__":
-#     main()

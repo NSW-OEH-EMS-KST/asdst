@@ -11,38 +11,52 @@ logger = None
 
 
 def get_log_file_and_path():
-    return os.path.join(utils.get_appdata_path(), "log.txt")
+
+    return os.path.join(utils.get_appdata_path(), "asdst.log")
 
 
 def debug(msg):
-    if logger:
+
+    if not logger:
+        configure_logging()
+
+    try:
         logger.debug(msg)
-    else:
+    except:
         print("DEBUG: " + msg)
 
 
 def info(msg):
-    if logger:
+
+    if not logger:
+        configure_logging()
+
+    try:
         logger.info(msg)
-    else:
+    except:
         print("INFO: " + msg)
 
 
 def warn(msg):
-    if logger:
+
+    if not logger:
+        configure_logging()
+
+    try:
         logger.warn(msg)
-    else:
+    except:
         print("WARNING: " + msg)
 
 
 def error(msg):
-    if logger:
+
+    if not logger:
+        configure_logging()
+
+    try:
         logger.error(msg)
-    else:
+    except:
         print("ERROR: " + msg)
-
-
-# _ADDIN_MESSAGE = print
 
 
 class ArcStreamHandler(logging.StreamHandler):
@@ -53,9 +67,6 @@ class ArcStreamHandler(logging.StreamHandler):
 
 
 def configure_logging():  # log_file, addin_message):
-
-    # global _ADDIN_MESSAGE
-    # _ADDIN_MESSAGE = addin_message
 
     log_file = get_log_file_and_path()
 
@@ -80,7 +91,6 @@ def configure_logging():  # log_file, addin_message):
     logger.debug("ArcLogHandler added")
 
     logger.debug("Logging configured")
-    # print("Logging configured")
 
     return
 
@@ -96,6 +106,9 @@ def error_trap(identifier=None):
     identifier = identifier or inspect.getframeinfo(inspect.currentframe())[2]
     _in = "IN  " + identifier
     _out = "OUT " + identifier
+
+    if not logger:
+        configure_logging()
 
     if not logger:
         say = print

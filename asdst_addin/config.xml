@@ -7,14 +7,14 @@
     </Description>
     <Version>0.2
     </Version><Image />
-    <Author>D.Bye, KST, NSW OEH
+    <Author>D.Bye, KST, EMS, NSW OEH
     </Author>
     <Company>NSW OEH
     </Company>
-    <Date>2017-04-10 12:29
+    <Date>2018-01-09 14:28
     </Date>
     <Targets>
-        <Target name="Desktop" version="10.1" />
+        <Target name="Desktop" version="10.4" />
     </Targets>
     <AddIn language="PYTHON" library="asdst_addin.py" namespace="asdst_addin">
         <ArcMap>
@@ -71,7 +71,8 @@
                 </Button>
             </Commands>
             <Extensions>
-                <Extension autoLoad="True" category="ASDST" class="AsdstExtension"
+                <Extension autoLoad="True" category="ASDST"
+                           class="AsdstExtension"
                            description="Aboriginal Sites Decision Support Tools" id="asdst_addin.extension"
                            name="ASDST" productName="ASDST" showInExtensionDialog="True" />
             </Extensions>

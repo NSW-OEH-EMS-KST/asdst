@@ -74,7 +74,7 @@ sleep(1)
 # # Open test map document.
 print "Re-opening ArcMap"
 # mapdoc = r"C:\Data\asdst_test\test_1.mxd"
-arcmap = 'c:\\"Program Files (x86)"\\ArcGIS\\Desktop10.4\\bin\\arcmap.exe /log'
+arcmap = 'c:\\"Program Files (x86)"\\ArcGIS\\Desktop10.4\\bin\\arcmap.exe'
 system(arcmap)
 # sleep(20)
 # print "and closing again!!!"

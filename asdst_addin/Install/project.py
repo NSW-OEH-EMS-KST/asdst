@@ -1,14 +1,13 @@
 import arcpy
-import arcpy.mapping
+from arcpy import mapping
 from os import system
 from os.path import join
-from asdst_addin import get_config
-from log import log
+from config import get_config
 
 
 class CreateProjectTool(object):
 
-    @log
+    # @log
     def __init__(self):
 
         self.label = u'Create Project'
@@ -17,7 +16,7 @@ class CreateProjectTool(object):
 
         return
 
-    @log
+    # @log
     def getParameterInfo(self):
 
         # Name
@@ -58,7 +57,7 @@ class CreateProjectTool(object):
     #
     #     return
 
-    @log
+    # @log
     def execute(self, parameters, messages):
 
         # Get user inputs
@@ -83,9 +82,9 @@ class CreateProjectTool(object):
 
         arcpy.Copy_management(config["template_mxd"], mxd_file)
 
-        # # Fix default MXD tags
+        # # Fix default MXD tags  REMOVED THIS JUST TAKES TOO LONG ON OEH SYSTEM
         # messages.addMessage("Updating tags")
-        # mxd = arcpy.mapping.MapDocument(mxd_file)
+        # mxd = mapping.MapDocument(mxd_file)
         # mxd.title = raw_title
         # tag = {"ASDST": "DO NOT EDIT THIS TAG",
         #        "Version": 1,
@@ -95,11 +94,15 @@ class CreateProjectTool(object):
         #        "Description": description}
         # tag = str(tag).replace(",", ";")
         # mxd.tags = ",".join([mxd.tags, tag])
-        #
+
         # # Save and report status
         # mxd.save()
 
-        messages.addMessage("New ASDST project '{0}' is launching in a separate ArcMap window".format(raw_title))
+        messages.addMessage("New ASDST project '{} ({})' has been created: {}".format(raw_title, description, mxd_file))
 
-        # Launch new MXD
-        system(mxd_file)
+        return
+
+        # messages.addMessage("New ASDST project '{0}' is launching in a separate ArcMap window".format(raw_title))
+        #
+        # # Launch new MXD
+        # system(mxd_file)

@@ -1,13 +1,14 @@
 import arcpy
 from arcpy import env
 import os
-from asdst_addin import get_system_config, get_layer_map, get_map_config, get_user_config, compact_fgdb, add_layers_to_mxd, add_table_to_mxd
-from log import log
+from config import get_system_config, get_layer_map, get_map_config, get_user_config
+from utils import compact_fgdb, add_layers_to_mxd, add_table_to_mxd
+# from log import log
 
 
 class BuildDataTool(object):
 
-    @log
+    # @log
     def __init__(self):
 
         self.label = u'Build ASDST Data'
@@ -16,7 +17,7 @@ class BuildDataTool(object):
 
         return
 
-    @log
+    # @log
     def getParameterInfo(self):
 
         # Project_Area
@@ -27,12 +28,21 @@ class BuildDataTool(object):
         param0.direction = 'Input'
         param0.datatype = 'GPFeatureRecordSetLayer'
 
-        epf = get_system_config()["empty_polyf_layer"]
-        gdb = get_map_config()['gdb']
+        try:
+            epf = get_system_config()["empty_polyf_layer"]
+        except:
+            epf = "ERR"
+        try:
+            gdb = get_map_config()['gdb']
+        except:
+            gdb = "ERR"
 
-        epfl = arcpy.mapping.Layer(epf)
-        epfl.replaceDataSource(gdb, "FILEGDB_WORKSPACE", "aoi")
-        epfl.save()
+        try:
+            epfl = arcpy.mapping.Layer(epf)
+            epfl.replaceDataSource(gdb, "FILEGDB_WORKSPACE", "aoi")
+            epfl.save()
+        except:
+            pass
 
         param0.value = epf
 
@@ -50,7 +60,7 @@ class BuildDataTool(object):
     #
     #     return
 
-    @log
+    # @log
     def execute(self, parameters, messages):
 
         # Aliases
@@ -200,22 +210,22 @@ class BuildDataTool(object):
         add_table_to_mxd(loss, messages=messages)
 
         lyrs = {"Model Reliability": layer_map2["reliability"]}
-        add_layers_to_mxd(lyrs, "Derived", "relia", messages=messages)
+        add_layers_to_mxd(lyrs, "Derived", "relia", get_system_config(), messages=messages)
 
         lyrs = {"Survey Priority": layer_map2["priority"]}
-        add_layers_to_mxd(lyrs, "Derived", "prior", messages=messages)
+        add_layers_to_mxd(lyrs, "Derived", "prior", get_system_config(), messages=messages)
 
         lyrs = {"Accumulated Impact": layer_map2["impact"]}
-        add_layers_to_mxd(lyrs, "Derived", "accim", messages=messages)
+        add_layers_to_mxd(lyrs, "Derived", "accim", get_system_config(), messages=messages)
 
         lyrs = {"Regionalisation Level {0}".format(i): layer_map2["aslu_lvl{0}".format(i)] for i in range(1, 5)}
-        add_layers_to_mxd(lyrs, "Regionalisation", "regio", messages=messages)
+        add_layers_to_mxd(lyrs, "Regionalisation", "regio", get_system_config(), messages=messages)
 
         lyrs = {v["name"]: v["1750_local"] for k, v in layer_map.iteritems()}
-        add_layers_to_mxd(lyrs, "Pre-1750", "model", messages=messages)
+        add_layers_to_mxd(lyrs, "Pre-1750", "model", get_system_config(), messages=messages)
 
         lyrs = {v["name"]: v["curr_local"] for k, v in layer_map.iteritems()}
-        add_layers_to_mxd(lyrs, "Current", "model", messages=messages)
+        add_layers_to_mxd(lyrs, "Current", "model", get_system_config(), messages=messages)
 
         # Save and report status
         # mxd.save()

@@ -11,7 +11,7 @@
     </Author>
     <Company>NSW OEH
     </Company>
-    <Date>2018-01-09 14:28
+    <Date>2018-01-29 15:48
     </Date>
     <Targets>
         <Target name="Desktop" version="10.4" />
@@ -19,6 +19,26 @@
     <AddIn language="PYTHON" library="asdst_addin.py" namespace="asdst_addin">
         <ArcMap>
             <Commands>
+                <Button caption="ASDST"
+                        category="ASDST"
+                        class="InfoButton"
+                        id="asdst_addin.cmd_info"
+                        image=""
+                        message="Display ASDST status"
+                        tip="Reflects the current ASDST configuration and project status">
+                    <Help heading="ASDST help ?">TO DO
+                    </Help>
+                </Button>
+                <Button caption="Manage Layers"
+                        category="ASDST"
+                        class="ManageLayersButton"
+                        id="asdst_addin.cmd_manage_layers"
+                        image="Images/LayerBasemap16.png"
+                        message="Manage ASDST and Context Layers within the Map"
+                        tip="Manage ASDST and Context Layers within the Map">
+                    <Help heading="ASDST help ?">TO DO
+                    </Help>
+                </Button>
                 <Button caption="Create New ASDST Project"
                         category="ASDST"
                         class="CreateProjectButton"
@@ -59,16 +79,6 @@
                     <Help heading="ASDST help ?">TO DO
                     </Help>
                 </Button>
-                <Button caption="ASDST"
-                        category="ASDST"
-                        class="InfoButton"
-                        id="asdst_addin.cmd_info"
-                        image=""
-                        message="Display ASDST status"
-                        tip="Reflects the current ASDST configuration and project status">
-                    <Help heading="ASDST help ?">TO DO
-                    </Help>
-                </Button>
             </Commands>
             <Extensions>
                 <Extension autoLoad="True" category="ASDST"
@@ -81,6 +91,7 @@
                     <Items>
                         <Button refID="asdst_addin.cmd_info" />
                         <Button refID="asdst_addin.cmd_configure" />
+                        <Button refID="asdst_addin.cmd_manage_layers" />
                         <Button refID="asdst_addin.cmd_create_project" />
                         <Button refID="asdst_addin.cmd_build_data" />
                         <Button refID="asdst_addin.cmd_calculate_context" />

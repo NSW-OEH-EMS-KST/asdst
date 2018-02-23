@@ -11,7 +11,7 @@
     </Author>
     <Company>NSW OEH
     </Company>
-    <Date>2018-02-06 08:25
+    <Date>2018-02-23 16:33
     </Date>
     <Targets>
         <Target name="Desktop" version="10.4" />
@@ -29,16 +29,16 @@
                     <Help heading="ASDST help ?">TO DO
                     </Help>
                 </Button>
-                <Button caption="Manage Layers"
-                        category="ASDST"
-                        class="ManageLayersButton"
-                        id="asdst_addin.cmd_manage_layers"
-                        image="Images/LayerBasemap16.png"
-                        message="Manage ASDST and Context Layers within the Map"
-                        tip="Manage ASDST and Context Layers within the Map">
-                    <Help heading="ASDST help ?">TO DO
-                    </Help>
-                </Button>
+                <!--<Button caption="Manage Layers"-->
+                        <!--category="ASDST"-->
+                        <!--class="ManageLayersButton"-->
+                        <!--id="asdst_addin.cmd_manage_layers"-->
+                        <!--image="Images/LayerBasemap16.png"-->
+                        <!--message="Manage ASDST and Context Layers within the Map"-->
+                        <!--tip="Manage ASDST and Context Layers within the Map">-->
+                    <!--<Help heading="ASDST help ?">TO DO-->
+                    <!--</Help>-->
+                <!--</Button>-->
                 <Button caption="Create New ASDST Project"
                         category="ASDST"
                         class="CreateProjectButton"
@@ -83,7 +83,8 @@
             <Extensions>
                 <Extension autoLoad="True" category="ASDST"
                            class="AsdstExtension"
-                           description="Aboriginal Sites Decision Support Tools" id="asdst_addin.extension"
+                           description="Aboriginal Sites Decision Support Tools"
+                           id="asdst_addin.extension"
                            name="ASDST" productName="ASDST" showInExtensionDialog="True" />
             </Extensions>
             <Toolbars>
@@ -91,7 +92,7 @@
                     <Items>
                         <Button refID="asdst_addin.cmd_info" />
                         <Button refID="asdst_addin.cmd_configure" />
-                        <Button refID="asdst_addin.cmd_manage_layers" />
+                        <!--<Button refID="asdst_addin.cmd_manage_layers" />-->
                         <Button refID="asdst_addin.cmd_create_project" />
                         <Button refID="asdst_addin.cmd_build_data" />
                         <Button refID="asdst_addin.cmd_calculate_context" />

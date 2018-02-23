@@ -1,8 +1,9 @@
 import arcpy
-from os.path import split, join
+from arcpy import mapping
+from os.path import realpath, dirname, join, split
 from utils import compact_fgdb
-from config import get_system_config, get_map_config, get_user_config, get_layer_map, get_codes, get_codes_ex
-from utils import add_layers_to_mxd, add_table_to_mxd
+from config import get_codes, get_codes_ex
+from utils import add_layers_to_mxd, add_table_to_mxd, get_user_config, geodata_exists, get_template_layers, get_layer_map
 
 
 class ContextCalculationTool(object):
@@ -13,11 +14,17 @@ class ContextCalculationTool(object):
         self.description = u'Calculate project context data'
         self.canRunInBackground = True
 
+        self.empty_polyfeature_layer = join(dirname(realpath(__file__)), "epf.lyr")
+        self.empty_context_gdb = join(dirname(realpath(__file__)), "context.gdb")
+        self.mxd = mapping.MapDocument("CURRENT")
+        self.project_gdb = self.mxd.filePath.replace(".mxd", ".gdb")
+
+        self.empty_polyfeature_layer_exists = geodata_exists(self.empty_polyfeature_layer)
+        self.project_gdb_exists = geodata_exists(self.project_gdb)
+
         return
 
     def getParameterInfo(self):
-
-        empty_poly_layer = get_system_config()["empty_polyf_layer"]
 
         # Name
         param_1 = arcpy.Parameter()
@@ -42,7 +49,7 @@ class ContextCalculationTool(object):
         param_3.parameterType = 'Required'
         param_3.direction = 'Input'
         param_3.datatype = u'Feature Set'
-        param_3.value = empty_poly_layer
+        param_3.value = self.empty_polyfeature_layer
 
         # Assessment_Feature
         param_4 = arcpy.Parameter()
@@ -51,7 +58,7 @@ class ContextCalculationTool(object):
         param_4.parameterType = 'Required'
         param_4.direction = 'Input'
         param_4.datatype = u'Feature Set'
-        param_4.value = empty_poly_layer
+        param_4.value = self.empty_polyfeature_layer
 
         # Conservation_Feature
         param_5 = arcpy.Parameter()
@@ -60,7 +67,7 @@ class ContextCalculationTool(object):
         param_5.parameterType = 'Required'
         param_5.direction = 'Input'
         param_5.datatype = u'Feature Set'
-        param_5.value = empty_poly_layer
+        param_5.value =self. empty_polyfeature_layer
 
         return [param_1, param_2, param_3, param_4, param_5]
 
@@ -92,11 +99,13 @@ class ContextCalculationTool(object):
                  "Conservation": [conservation, geom_conservation]}
 
         messages.addMessage("Reading configuration")
-        config = get_system_config()
-        proj_gdb = get_map_config()["gdb"]
+
+        # sys_cfg = get_system_config()
+        usr_cfg = get_user_config()
+        proj_gdb = self.project_gdb
 
         # Make the required file system
-        arcpy.Copy_management(config["template_context_gdb"], gdb)
+        arcpy.Copy_management(self.empty_context_gdb, gdb)
         messages.addMessage("Context geodatabase '{}' created".format(gdb))
 
         # Import calculation areas into project workspace i.e. save the geometry to be used
@@ -198,7 +207,7 @@ class ContextCalculationTool(object):
         del ic
 
         # Build AHIMS data if configured
-        ahims_sites = get_user_config()["ahims_sites"]
+        ahims_sites = usr_cfg["ahims_sites"]  # get_ahims_points()
 
         if ahims_sites:
             messages.addMessage("Analysing AHIMS points...")
@@ -248,7 +257,7 @@ class ContextCalculationTool(object):
         # Add data to map
         messages.addMessage("Adding feature layers to map...")
         lyrs = {k: v[0] for k, v in areas.iteritems()}
-        add_layers_to_mxd(lyrs, "Context {}".format(sane_title), "calc", get_system_config(), messages)
+        add_layers_to_mxd(lyrs, "Context {}".format(sane_title), "calc", get_template_layers(), messages)
         messages.addMessage("Adding result tables to map...")
         add_table_to_mxd(table_summ, "context_loss", messages)
         add_table_to_mxd(table_ahims, "context_ahims", messages)

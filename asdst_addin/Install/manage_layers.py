@@ -1,6 +1,6 @@
 import arcpy
 from utils import add_layers_to_mxd, add_group_layers
-from config import get_system_config
+from asdst_addin import get_system_config
 
 
 LAYERS = {
@@ -281,15 +281,15 @@ class ManageLayersTool(object):
 
         messages.AddMessage("top_group_layers: {}".format(layer_structure))
 
-        configuration = get_system_config()
+        sys_cfg = get_system_config()
 
         # add the layers
         for k, v, l in layer_structure:
             # add group layers
-            add_group_layers([v], k, configuration, messages=messages)
+            add_group_layers([v], k, sys_cfg, messages=messages)
 
-            # def add_layers_to_mxd(layers, group_name, layer_type, configuration, messages=None, add_position="BOTTOM"):
-            add_layers_to_mxd(l, v, None, configuration, messages=messages)  # top level
+            # def add_layers_to_mxd(layers, group_name, layer_type, sys_cfg, messages=None, add_position="BOTTOM"):
+            add_layers_to_mxd(l, v, None, sys_cfg, messages=messages)  # top level
             # add_layers_to_mxd({}, v, k, get_system_config(), messages=messages)  # second level
             # add layers
 

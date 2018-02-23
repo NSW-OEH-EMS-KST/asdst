@@ -1,13 +1,11 @@
 import arcpy
-from arcpy import mapping
-from os import system
-from os.path import join
-from config import get_config
+from os.path import realpath, dirname, join
+# from asdst_addin import get_system_config
+from utils import get_user_config
 
 
 class CreateProjectTool(object):
 
-    # @log
     def __init__(self):
 
         self.label = u'Create Project'
@@ -16,7 +14,6 @@ class CreateProjectTool(object):
 
         return
 
-    # @log
     def getParameterInfo(self):
 
         # Name
@@ -57,7 +54,6 @@ class CreateProjectTool(object):
     #
     #     return
 
-    # @log
     def execute(self, parameters, messages):
 
         # Get user inputs
@@ -68,19 +64,21 @@ class CreateProjectTool(object):
         sane_title = raw_title.lower().replace(" ", "_")
         base = join(directory, sane_title)
 
-        config = get_config()
-
         gdb = base + ".gdb"
 
-        messages.addMessage("Creating project geodatabase '{}'".format(gdb))
+        # sys_cfg =
+        t_gdb = join(dirname(realpath(__file__)), "project.gdb")   # get_system_config()["template_project_gdb"]
 
-        arcpy.Copy_management(config["template_project_gdb"], gdb)
+        messages.addMessage("Creating project geodatabase '{}' using '{}'".format(gdb, t_gdb))
+
+        arcpy.Copy_management(t_gdb, gdb)
 
         mxd_file = base + ".mxd"
+        t_mxd = get_user_config()["template_mxd"]
 
-        messages.addMessage("Creating project map document '{}'".format(mxd_file))
+        messages.addMessage("Creating project map document '{}' using '{}'".format(mxd_file, t_mxd))
 
-        arcpy.Copy_management(config["template_mxd"], mxd_file)
+        arcpy.Copy_management(t_mxd, mxd_file)
 
         # # Fix default MXD tags  REMOVED THIS JUST TAKES TOO LONG ON OEH SYSTEM
         # messages.addMessage("Updating tags")
@@ -102,7 +100,3 @@ class CreateProjectTool(object):
 
         return
 
-        # messages.addMessage("New ASDST project '{0}' is launching in a separate ArcMap window".format(raw_title))
-        #
-        # # Launch new MXD
-        # system(mxd_file)

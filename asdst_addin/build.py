@@ -46,7 +46,7 @@ def replace(file_path, pattern, subst):
     remove(file_path)  # Remove original file
     move(abs_path, file_path)  # Move new file
 
-# update the config file with new date + time
+# update the system_config file with new date + time
 cfg_file = r"C:\Data\asdst\asdst_addin\config.xml"
 replace(cfg_file, "    <Date>", "    <Date>" + strftime("%Y-%m-%d %H:%M"))
 
